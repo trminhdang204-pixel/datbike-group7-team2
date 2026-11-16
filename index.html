@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dealer Request Hub · Concept prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--or:#f56c1f;--or2:#ff7d33;--orbg:#2b1607;--ink:#ffffff;--ink2:#c4c4c4;--ink3:#8c8c8c;--line:#262626;--bg:#0a0a0a;--card:#141414;--ok:#4fc98b;--okbg:#10261a;--warn:#f2b44e;--warnbg:#2a200e;--bad:#f27d7d;--badbg:#2c1414;--r:14px;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+button{font-family:inherit;cursor:pointer}
+.concept{background:#000;color:#8c8c8c;font-size:12px;text-align:center;padding:6px 12px}
+header{background:#000;color:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:24px;padding:0 28px;height:64px;position:sticky;top:0;z-index:5}
+.brand{font-weight:800;letter-spacing:.04em;font-size:18px}
+.brand span{color:var(--or)}
+.brand small{font-weight:500;color:#aaa;letter-spacing:0;margin-left:8px;font-size:13px}
+nav{display:flex;gap:4px;flex:1}
+nav button{background:none;border:0;color:#ccc;font-size:14px;font-weight:500;padding:10px 14px;border-radius:999px}
+nav button.on{color:#fff;background:#1f1f1f}
+.role{display:flex;background:#1a1a1a;border-radius:999px;padding:4px}
+.role button{border:0;background:none;color:#bbb;padding:8px 16px;border-radius:999px;font-weight:600;font-size:13px}
+.role button.on{background:var(--or);color:#fff}
+main{max-width:1180px;margin:0 auto;padding:28px}
+h1{font-size:28px;font-weight:700;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--ink2);margin:0 0 24px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--or)}
+.grid{display:grid;gap:16px}
+.k4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.kpi .v{font-size:28px;font-weight:800;margin-top:6px}
+.kpi .l{color:var(--ink2);font-size:13px}
+.kpi .d{font-size:12px;margin-top:4px;color:var(--ok)}
+h2{font-size:18px;font-weight:700;margin:0 0 14px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:12px;color:var(--ink3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:10px 12px;border-bottom:1px solid var(--line)}
+td{padding:12px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tr.click:hover td{background:#1c1c1c;cursor:pointer}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.gold{background:#2e2408;color:#f2c14e}.silver{background:#22252a;color:#c9ced6}.bronze{background:#2b1a10;color:#e0a07a}
+.s-auto{background:var(--okbg);color:var(--ok)}.s-ok{background:var(--okbg);color:var(--ok)}.s-pend{background:var(--warnbg);color:var(--warn)}.s-rej{background:var(--badbg);color:var(--bad)}
+.bar{height:8px;background:#2a2a2a;border-radius:99px;overflow:hidden;width:120px;display:inline-block;vertical-align:middle;margin-right:8px}
+.bar i{display:block;height:100%;background:var(--or)}
+.btn{border:0;border-radius:999px;padding:11px 20px;font-weight:700;font-size:14px}
+.btn.pri{background:var(--or);color:#fff}.btn.pri:hover{background:var(--or2)}
+.btn.sec{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn.ghost{background:#222;color:var(--ink)}
+.btn.sm{padding:7px 14px;font-size:13px}
+.ai{border:1.5px solid var(--or);background:var(--card);position:relative}
+.ai .tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--or);background:var(--orbg);padding:4px 10px;border-radius:999px;margin-bottom:10px}
+.ai h3{margin:0 0 6px;font-size:16px}
+.ai p{margin:0 0 14px;color:var(--ink2);line-height:1.55}
+.facts{display:flex;gap:18px;margin-bottom:14px;flex-wrap:wrap}
+.facts div{font-size:12px;color:var(--ink3)}.facts b{display:block;color:var(--ink);font-size:15px}
+.two{grid-template-columns:1.3fr 1fr}
+label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin:14px 0 6px}
+input,select,textarea{width:100%;font-family:inherit;font-size:14px;padding:11px 12px;border:1px solid #333;border-radius:10px;background:#0f0f0f;color:var(--ink)}
+textarea{min-height:80px;resize:vertical}
+.check{border-radius:12px;padding:14px 16px;margin-top:16px;font-size:13px;line-height:1.5}
+.check.ok{background:var(--okbg);color:var(--ok)}.check.warn{background:var(--warnbg);color:var(--warn)}.check.bad{background:var(--badbg);color:var(--bad)}
+.check b{display:block;font-size:14px;margin-bottom:2px}
+.row{display:flex;gap:10px;align-items:center}
+.sp{flex:1}
+.muted{color:var(--ink3);font-size:12px}
+.tl{border-left:2px solid var(--line);margin-left:6px;padding-left:16px}
+.tl>div{position:relative;margin-bottom:14px}
+.tl>div:before{content:'';position:absolute;left:-23px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--or)}
+.tl>div.grey:before{background:#444}
+.toast{position:fixed;right:24px;bottom:24px;background:var(--or);color:#fff;padding:14px 18px;border-radius:12px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.2);transform:translateY(120px);transition:.3s;z-index:20;max-width:360px}
+.toast.show{transform:none}
+.note{font-size:12px;color:var(--ink2);background:#0f0f0f;border:1px dashed #3a3a3a;border-radius:10px;padding:10px 12px;margin-top:12px}
+.rule td input{width:110px;padding:7px 10px}
+.hero{background:#141414;border:1px solid var(--line);color:#fff;border-radius:18px;padding:26px 28px;display:flex;align-items:center;gap:24px;margin-bottom:20px}
+.hero h1{color:#fff}.hero .sub{color:#bbb;margin:0}
+.hero .big{font-size:40px;font-weight:800;color:var(--or)}
+.cap{position:fixed;left:50%;top:84px;transform:translateX(-50%);background:var(--or);color:#fff;font-weight:700;padding:10px 20px;border-radius:999px;z-index:30;font-size:15px;display:none;box-shadow:0 6px 24px rgba(255,91,0,.35)}
+</style>
+</head>
+<body>
+<div class="concept">Concept prototype for a university innovation project · Not an official Dat Bike product · All data is sample data</div>
+<header>
+  <div class="brand">DAT BIKE<span>.</span><small>Dealer Request Hub</small></div>
+  <nav id="nav"></nav>
+  <div class="role"><button id="r-hq" class="on" onclick="setRole('hq')">Dat Bike HQ</button><button id="r-dl" onclick="setRole('dealer')">Dealer view</button></div>
+</header>
+<div class="cap" id="cap"></div>
+<main id="app"></main>
+<div class="toast" id="toast"></div>
+
+<script>
+const fmt=n=>n.toLocaleString('vi-VN');
+const M=n=>(n/1e6).toLocaleString('en-US',{maximumFractionDigits:1})+'M ₫';
+let state={
+ role:'hq', page:'dash', dealer:'D01', ticket:null, draft:null, seq:105,
+ rules:[
+  {id:'comm',name:'Extra commission on aged stock',unit:'₫ / bike',max:500000,auto:10000000,tiers:['Bronze','Silver','Gold'],cond:'Stock aged > 60 days'},
+  {id:'mkt',name:'Local marketing budget',unit:'₫ / month',max:20000000,auto:10000000,tiers:['Silver','Gold'],cond:'Event or local ads plan attached'},
+  {id:'alloc',name:'Priority allocation of hot colors',unit:'bikes / launch',max:30,auto:0,tiers:['Gold'],cond:'Quality score ≥ 85'},
+  {id:'swat',name:'SWAT team coaching visit',unit:'weeks',max:4,auto:0,tiers:['Bronze','Silver','Gold'],cond:'Target attainment < 70%'}
+ ],
+ budget:{total:600000000,used:184500000},
+ dealers:[
+  {id:'D01',name:'Tan Phat Motors',city:'Bien Hoa, Dong Nai',tier:'Silver',sold:92,target:120,aged:15,agedModel:'Quantum S2 · Black',q:82,support:12500000,roi:3.1},
+  {id:'D02',name:'Minh Long EV',city:'Thu Duc, HCMC',tier:'Gold',sold:188,target:180,aged:2,agedModel:'—',q:93,support:38000000,roi:5.4},
+  {id:'D03',name:'An Khang Auto',city:'Thu Dau Mot, Binh Duong',tier:'Bronze',sold:41,target:80,aged:9,agedModel:'Quantum S1 · Gray',q:71,support:6000000,roi:1.8},
+  {id:'D04',name:'Hoang Gia Motor',city:'Le Chan, Hai Phong',tier:'Silver',sold:104,target:110,aged:4,agedModel:'Weaver 200 · White',q:86,support:21000000,roi:4.2},
+  {id:'D05',name:'Song Viet EV',city:'Long Bien, Hanoi',tier:'Gold',sold:176,target:170,aged:1,agedModel:'—',q:91,support:52000000,roi:4.9},
+  {id:'D06',name:'Phu Quy Moto',city:'Bien Hoa, Dong Nai',tier:'Bronze',sold:58,target:90,aged:11,agedModel:'Quantum S3 · Red',q:76,support:9500000,roi:2.2}
+ ],
+ tickets:[
+  {id:'T-104',dealer:'D04',type:'mkt',qty:1,amount:18000000,reason:'Weekend test-ride event at Aeon Mall Hai Phong, 2 days, target 60 test rides.',status:'pend',created:'14 Nov',by:'Dealer'},
+  {id:'T-103',dealer:'D02',type:'alloc',qty:25,amount:0,reason:'Waitlist of 41 customers for Quantum S3 Gray in Thu Duc.',status:'pend',created:'13 Nov',by:'AI suggestion'},
+  {id:'T-102',dealer:'D05',type:'comm',qty:6,amount:2400000,reason:'6 Weaver 200 units aged 65 days.',status:'ok',created:'08 Nov',by:'AI suggestion',outcome:{sold:6,of:6,days:9}},
+  {id:'T-101',dealer:'D03',type:'swat',qty:2,amount:0,reason:'Attainment 51%, test-ride conversion 18% vs network 34%.',status:'ok',created:'02 Nov',by:'AI suggestion',outcome:{sold:0,of:0,days:0,note:'SWAT visit scheduled 18 Nov'}}
+ ]
+};
+const D=id=>state.dealers.find(d=>d.id===id);
+const R=id=>state.rules.find(r=>r.id===id);
+const tierPill=t=>`<span class="pill ${t.toLowerCase()}">${t}</span>`;
+const stPill=s=>({auto:'<span class="pill s-auto">Auto-approved</span>',ok:'<span class="pill s-ok">Approved</span>',pend:'<span class="pill s-pend">Pending review</span>',rej:'<span class="pill s-rej">Rejected</span>'}[s]);
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2600)}
+function caption(t){const c=document.getElementById('cap');if(!t){c.style.display='none';return}c.textContent=t;c.style.display='block'}
+function setRole(r){state.role=r;state.page=r==='hq'?'dash':'home';document.getElementById('r-hq').classList.toggle('on',r==='hq');document.getElementById('r-dl').classList.toggle('on',r==='dealer');render()}
+function go(p,extra){state.page=p;Object.assign(state,extra||{});render();window.scrollTo(0,0)}
+function navHtml(){
+ const items=state.role==='hq'?[['dash','Dashboard'],['queue','Approval queue'],['rules','Support policy']]:[['home','My store'],['new','New request'],['mine','My requests']];
+ document.getElementById('nav').innerHTML=items.map(([k,l])=>`<button class="${state.page===k?'on':''}" onclick="go('${k}')">${l}${k==='queue'?` (${state.tickets.filter(t=>t.status==='pend').length})`:''}</button>`).join('');
+}
+function suggestions(d){
+ const s=[];
+ if(d.aged>=5) s.push({type:'comm',qty:d.aged,per:400000,title:`${d.aged} × ${d.agedModel} aged over 60 days`,text:`These bikes tie up about ${M(d.aged*42000000)} of your working capital. Similar stores cleared aged stock in 9–14 days with an extra commission of 400k ₫ per bike.`,est:`+${Math.round(d.aged*0.8)} sales in 14 days`});
+ if(d.sold/d.target<0.7) s.push({type:'swat',qty:2,per:0,title:`Target attainment ${Math.round(d.sold/d.target*100)}%`,text:`Test-ride conversion is below the network average. A 2-week SWAT coaching visit lifted similar stores by 22% on average.`,est:'+15–20% conversion'});
+ if(d.tier!=='Bronze'&&d.q>=80) s.push({type:'mkt',qty:1,per:8000000,title:'Demand signal: 37 online leads near your store this month',text:'A weekend test-ride event could convert these leads. Your tier qualifies for local marketing support.',est:'+8–12 sales'});
+ return s;
+}
+function policyCheck(dr){
+ const d=D(dr.dealer), r=R(dr.type); const amt=dr.type==='comm'?dr.qty*dr.per:dr.type==='mkt'?dr.per:0;
+ if(!r.tiers.includes(d.tier)) return {cls:'bad',t:'Not eligible',m:`${r.name} is available to ${r.tiers.join(', ')} dealers. Your store is ${d.tier}.`,status:null,amt};
+ if(dr.type==='comm'&&dr.per>r.max) return {cls:'bad',t:'Above policy limit',m:`Maximum is ${fmt(r.max)} ₫ per bike. Lower the amount or attach a reason for HQ.`,status:'pend',amt};
+ if(dr.type==='mkt'&&dr.per>r.max) return {cls:'bad',t:'Above policy limit',m:`Maximum is ${M(r.max)} per month.`,status:'pend',amt};
+ if(r.auto>0&&amt<=r.auto) return {cls:'ok',t:'Within policy: approved instantly',m:`Total ${M(amt)} is under the auto-approval limit of ${M(r.auto)}. Customer price stays at MSRP.`,status:'auto',amt};
+ return {cls:'warn',t:'Needs HQ review',m:r.auto>0?`Total ${M(amt)} is above the auto-approval limit of ${M(r.auto)}. A regional manager will review within 24h.`:`${r.name} is always reviewed by a regional manager.`,status:'pend',amt};
+}
+function render(){navHtml();const a=document.getElementById('app');a.innerHTML=({dash,queue,rules,detail,home,newReq,mine})[state.page==='new'?'newReq':state.page]()}
+
+function dash(){
+ const tot=state.dealers.reduce((s,d)=>s+d.sold,0), tg=state.dealers.reduce((s,d)=>s+d.target,0);
+ const pend=state.tickets.filter(t=>t.status==='pend').length;
+ return `<div class="eyebrow">Dat Bike HQ</div><h1>Dealer network performance</h1><p class="sub">November 2026 · month to date · 6 dealers in pilot</p>
+ <div class="grid k4">
+  <div class="card kpi"><div class="l">Sell-out this month</div><div class="v">${fmt(tot)}</div><div class="d">${Math.round(tot/tg*100)}% of target ${fmt(tg)}</div></div>
+  <div class="card kpi"><div class="l">Support budget used</div><div class="v">${M(state.budget.used)}</div><div class="d" style="color:var(--ink2)">of ${M(state.budget.total)} this month</div></div>
+  <div class="card kpi"><div class="l">Avg. return on support</div><div class="v">3.6×</div><div class="d">gross profit per ₫ of support</div></div>
+  <div class="card kpi" style="cursor:pointer" onclick="go('queue')"><div class="l">Requests waiting</div><div class="v" style="color:var(--or)">${pend}</div><div class="d" style="color:var(--or)">Open approval queue →</div></div>
+ </div>
+ <div class="card" style="margin-top:16px"><h2>Dealers</h2><table><tr><th>Dealer</th><th>Tier</th><th>Sell-out vs target</th><th>Aged stock</th><th>Quality score</th><th>Support used</th><th>Return</th></tr>
+ ${state.dealers.map(d=>{const p=Math.round(d.sold/d.target*100);return `<tr><td><b>${d.name}</b><div class="muted">${d.city}</div></td><td>${tierPill(d.tier)}</td><td><span class="bar"><i style="width:${Math.min(p,100)}%;background:${p<70?'var(--bad)':'var(--or)'}"></i></span>${d.sold}/${d.target} · <b style="color:${p<70?'var(--bad)':'inherit'}">${p}%</b></td><td>${d.aged>=5?`<b style="color:var(--warn)">${d.aged} bikes</b>`:d.aged+(d.aged===1?' bike':' bikes')}</td><td>${d.q}</td><td>${M(d.support)}</td><td>${d.roi}×</td></tr>`}).join('')}
+ </table></div>`;
+}
+function queue(){
+ const list=[...state.tickets].sort((a,b)=>(a.status==='pend'?0:1)-(b.status==='pend'?0:1));
+ return `<div class="eyebrow">Dat Bike HQ</div><h1>Approval queue</h1><p class="sub">Requests inside policy are approved automatically. Only exceptions land here.</p>
+ <div class="card"><table><tr><th>Ticket</th><th>Dealer</th><th>Request</th><th>Amount</th><th>Source</th><th>Status</th></tr>
+ ${list.map(t=>`<tr class="click" onclick="go('detail',{ticket:'${t.id}'})"><td><b>${t.id}</b><div class="muted">${t.created}</div></td><td>${D(t.dealer).name}<div class="muted">${tierPill(D(t.dealer).tier)}</div></td><td>${R(t.type).name}<div class="muted">${t.qty} ${R(t.type).unit.split('/ ')[1]||''}</div></td><td>${t.amount?M(t.amount):'—'}</td><td>${t.by==='AI suggestion'?'<span class="pill" style="background:var(--orbg);color:var(--or)">AI suggestion</span>':'Dealer'}</td><td>${stPill(t.status)}</td></tr>`).join('')}
+ </table></div>`;
+}
+function rules(){
+ return `<div class="eyebrow">Dat Bike HQ</div><h1>Support policy</h1><p class="sub">HQ sets the rules once. Every dealer request is checked against them automatically.</p>
+ <div class="card"><table class="rule"><tr><th>Support type</th><th>Max</th><th>Auto-approve up to</th><th>Eligible tiers</th><th>Condition</th></tr>
+ ${state.rules.map((r,i)=>`<tr><td><b>${r.name}</b><div class="muted">${r.unit}</div></td><td><input type="number" value="${r.max}" onchange="state.rules[${i}].max=+this.value;toast('Policy updated')"></td><td>${r.auto?`<input type="number" value="${r.auto}" onchange="state.rules[${i}].auto=+this.value;toast('Policy updated')">`:'<span class="muted">Always reviewed</span>'}</td><td>${r.tiers.map(tierPill).join(' ')}</td><td class="muted">${r.cond}</td></tr>`).join('')}
+ </table>
+ <div class="note"><b>Price rule:</b> dealers cannot request customer discounts. Customer price always stays at MSRP. Regional price campaigns are launched by HQ for all stores in a region at once.</div></div>
+ <div class="card" style="margin-top:16px"><h2>Monthly support budget</h2><div class="row"><span class="bar" style="width:100%;height:12px"><i style="width:${state.budget.used/state.budget.total*100}%"></i></span></div><p class="muted">${M(state.budget.used)} used of ${M(state.budget.total)}</p></div>`;
+}
+function detail(){
+ const t=state.tickets.find(x=>x.id===state.ticket), d=D(t.dealer), r=R(t.type);
+ const out=t.outcome;
+ return `<div class="row"><button class="btn ghost sm" onclick="go(state.role==='hq'?'queue':'mine')">← Back</button></div>
+ <div class="eyebrow" style="margin-top:18px">${t.id} · ${t.created}</div><h1>${r.name}</h1><p class="sub">${d.name} · ${d.city} · ${tierPill(d.tier)} &nbsp; ${stPill(t.status)}</p>
+ <div class="grid two">
+  <div class="card"><h2>Request</h2>
+   <div class="facts"><div>Quantity<b>${t.qty} ${r.unit.split('/ ')[1]||''}</b></div><div>Total amount<b>${t.amount?M(t.amount):'—'}</b></div><div>Source<b>${t.by}</b></div></div>
+   <p style="line-height:1.6;margin:0">${t.reason}</p>
+   <h2 style="margin-top:22px">Dealer data</h2>
+   <div class="facts"><div>Sell-out vs target<b>${d.sold}/${d.target} (${Math.round(d.sold/d.target*100)}%)</b></div><div>Quality score<b>${d.q}</b></div><div>Aged stock<b>${d.aged} bikes</b></div><div>Return on past support<b>${d.roi}×</b></div></div>
+   ${t.status==='pend'&&state.role==='hq'?`<div class="row" style="margin-top:10px"><button class="btn pri" onclick="decide('${t.id}','ok')">Approve</button><button class="btn sec" onclick="decide('${t.id}','rej')">Reject</button></div>`:''}
+  </div>
+  <div class="card"><h2>Timeline</h2><div class="tl">
+   <div><b>Request created</b><div class="muted">${t.created} · ${t.by}</div></div>
+   <div class="${t.status==='pend'?'grey':''}"><b>${t.status==='auto'?'Auto-approved by policy':t.status==='pend'?'Waiting for regional manager':t.status==='rej'?'Rejected by HQ':'Approved by HQ'}</b><div class="muted">${t.status==='pend'?'SLA 24h':'Policy check passed'}</div></div>
+   <div class="${out?'':'grey'}"><b>Outcome tracking</b><div class="muted">${out?(out.note||`${out.sold} of ${out.of} bikes sold in ${out.days} days`):'Starts after approval'}</div></div>
+  </div></div>
+ </div>`;
+}
+function decide(id,s){const t=state.tickets.find(x=>x.id===id);t.status=s;if(s==='ok'){state.budget.used+=t.amount;t.outcome={sold:0,of:t.qty,days:0,note:'Tracking started · results in 14 days'}}toast(s==='ok'?`${id} approved · dealer notified on Zalo`:`${id} rejected · dealer notified`);render()}
+
+function home(){
+ const d=D(state.dealer), s=suggestions(d), p=Math.round(d.sold/d.target*100);
+ const next={Bronze:'Silver',Silver:'Gold',Gold:'Gold'}[d.tier];
+ return `<div class="hero"><div style="flex:1"><div class="eyebrow">Dealer view</div><h1>${d.name}</h1><p class="sub">${d.city}</p></div>
+  <div><div class="muted" style="color:#aaa">Tier</div><div style="margin-top:6px">${tierPill(d.tier)}</div></div>
+  <div><div class="muted" style="color:#aaa">Quality score</div><div class="big">${d.q}</div></div>
+  <div><div class="muted" style="color:#aaa">Sell-out</div><div class="big">${p}%</div></div></div>
+ <div class="grid two">
+  <div><h2>AI suggestions for your store</h2>
+   ${s.map((x,i)=>`<div class="card ai" style="margin-bottom:14px"><div class="tag">● AI suggestion</div><h3>${x.title}</h3><p>${x.text}</p>
+    <div class="facts"><div>Suggested support<b>${R(x.type).name}</b></div><div>Expected impact<b>${x.est}</b></div></div>
+    <button class="btn pri sm" id="sug-${i}" onclick='useSug(${JSON.stringify(x)})'>Create request from this</button></div>`).join('')||'<div class="card">No suggestions right now. Nice work.</div>'}
+  </div>
+  <div><h2>Your path to ${next}</h2><div class="card">
+   <p style="margin:0 0 12px;color:var(--ink2);line-height:1.6">${d.tier==='Gold'?'You are at the top tier. Keep quality above 85 to keep priority allocation of hot colors.':`Reach quality score 85+ and 100% of target for 2 months to unlock <b>${next}</b> benefits.`}</p>
+   <div class="facts"><div>Quality score<b>${d.q} / 85</b></div><div>Target<b>${p}% / 100%</b></div></div>
+   <div class="note"><b>${next} benefits:</b> ${next==='Gold'?'priority on hot colors at launch, better bank rates, sponsored events.':'local marketing budget, more online leads, higher commission.'}</div>
+  </div></div>
+ </div>`;
+}
+function useSug(x){state.draft={dealer:state.dealer,type:x.type,qty:x.qty,per:x.per,reason:x.title+'. '+x.text,by:'AI suggestion'};go('new')}
+function newReq(){
+ const dr=state.draft||{dealer:state.dealer,type:'mkt',qty:1,per:8000000,reason:'',by:'Dealer'}; state.draft=dr;
+ const c=policyCheck(dr);
+ const amtField=dr.type==='comm'?`<label>Extra commission per bike (₫)</label><input id="f-per" type="number" value="${dr.per}" oninput="state.draft.per=+this.value;refreshCheck()"><label>Number of bikes</label><input type="number" value="${dr.qty}" oninput="state.draft.qty=+this.value;refreshCheck()">`:dr.type==='mkt'?`<label>Budget requested (₫)</label><input id="f-per" type="number" value="${dr.per}" oninput="state.draft.per=+this.value;refreshCheck()">`:`<label>${dr.type==='swat'?'Weeks of coaching':'Bikes requested'}</label><input type="number" value="${dr.qty}" oninput="state.draft.qty=+this.value;refreshCheck()">`;
+ return `<div class="eyebrow">Dealer view · ${D(dr.dealer).name}</div><h1>New request</h1><p class="sub">Your request is checked against Dat Bike's support policy as you type.</p>
+ <div class="grid two"><div class="card">
+  ${dr.by==='AI suggestion'?'<div class="tag" style="display:inline-block;font-size:12px;font-weight:700;color:var(--or);background:var(--orbg);padding:4px 10px;border-radius:999px">● Pre-filled from AI suggestion</div>':''}
+  <label>Support type</label><select onchange="state.draft.type=this.value;state.draft.per=this.value==='comm'?400000:this.value==='mkt'?8000000:0;render()">${state.rules.map(r=>`<option value="${r.id}" ${r.id===dr.type?'selected':''}>${r.name}</option>`).join('')}</select>
+  ${amtField}
+  <label>Reason</label><textarea oninput="state.draft.reason=this.value">${dr.reason}</textarea>
+  <div id="chk">${checkHtml(c)}</div>
+  <div class="row" style="margin-top:16px"><button class="btn pri" id="submit" onclick="submitReq()">Submit request</button><button class="btn ghost" onclick="state.draft=null;go('home')">Cancel</button></div>
+ </div>
+ <div class="card"><h2>Policy for this support</h2>${(r=>`<div class="facts"><div>Maximum<b>${r.id==='comm'?fmt(r.max)+' ₫/bike':r.id==='mkt'?M(r.max):r.max+' '+r.unit.split('/ ')[0]}</b></div><div>Auto-approve<b>${r.auto?'up to '+M(r.auto):'Always reviewed'}</b></div></div><p class="muted">Eligible: ${r.tiers.join(', ')} · ${r.cond}</p>`)(R(dr.type))}
+ <div class="note">Customer price always stays at MSRP. Support is paid by Dat Bike to the dealer, not given as a customer discount.</div></div></div>`;
+}
+function checkHtml(c){return `<div class="check ${c.cls}"><b>${c.t}</b>${c.m}${c.amt?`<div style="margin-top:6px">Total: <b style="display:inline">${M(c.amt)}</b></div>`:''}</div>`}
+function refreshCheck(){document.getElementById('chk').innerHTML=checkHtml(policyCheck(state.draft))}
+function submitReq(){
+ const dr=state.draft,c=policyCheck(dr);
+ if(!c.status){toast('Not eligible for this support type');return}
+ const id='T-'+(++state.seq);
+ state.tickets.unshift({id,dealer:dr.dealer,type:dr.type,qty:dr.qty,amount:c.amt,reason:dr.reason||'—',status:c.status,created:'16 Nov',by:dr.by,outcome:c.status==='auto'?{sold:0,of:dr.qty,days:0,note:'Tracking started · results in 14 days'}:null});
+ if(c.status==='auto')state.budget.used+=c.amt;
+ state.draft=null; toast(c.status==='auto'?`${id} approved instantly ✓`:`${id} sent to Dat Bike HQ for review`); go('detail',{ticket:id});
+}
+function mine(){
+ const list=state.tickets.filter(t=>t.dealer===state.dealer);
+ return `<div class="eyebrow">Dealer view · ${D(state.dealer).name}</div><h1>My requests</h1><p class="sub">Track every request and its results.</p>
+ <div class="card">${list.length?`<table><tr><th>Ticket</th><th>Request</th><th>Amount</th><th>Status</th><th>Result</th></tr>${list.map(t=>`<tr class="click" onclick="go('detail',{ticket:'${t.id}'})"><td><b>${t.id}</b><div class="muted">${t.created}</div></td><td>${R(t.type).name}</td><td>${t.amount?M(t.amount):'—'}</td><td>${stPill(t.status)}</td><td class="muted">${t.outcome?(t.outcome.note||t.outcome.sold+'/'+t.outcome.of+' sold'):'—'}</td></tr>`).join('')}</table>`:'No requests yet.'}</div>`;
+}
+render();
+</script>
+</body>
+</html>
