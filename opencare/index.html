@@ -11,15 +11,16 @@
 <style>
 /* Layout: one phone screen; on wide screens it sits in a phone frame beside a short note */
 :root{
-  --bg:#0a0a0a;--surface:#161616;--surface2:#1f1f1f;--line:#2a2a2a;
-  --fg:#ffffff;--muted:#9c9c9c;--accent:#ed6720;--accent2:#fc5208;--red:#ad0802;--accent-soft:#2b1607;
+  --bg:#ffffff;--surface:#ffffff;--surface2:#f2f2f4;--line:#ececef;
+  --fg:#16161a;--muted:#6e6e78;--accent:#ed6720;--accent2:#fc5208;--red:#ad0802;--accent-soft:#fff1e7;
+  --shadow:0 2px 10px rgba(20,20,30,.06);
   --grad:linear-gradient(90deg,#ad0802,#fc5208);
-  --ok:#4fc98b;--ok-soft:#10261a;--warn:#f2b44e;--warn-soft:#2a200e;--bad:#f27d7d;--bad-soft:#2c1414;
-  --font:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:dark;
+  --ok:#14a05a;--ok-soft:#e4f6ec;--warn:#b7741a;--warn-soft:#fdf2df;--bad:#d64545;--bad-soft:#fdeaea;
+  --font:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:light;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{background:#050505;color:var(--fg);font-family:var(--font);font-size:14px;line-height:1.45}
+body{background:#f4f1ee;color:var(--fg);font-family:var(--font);font-size:14px;line-height:1.45}
 button,input,select{font-family:inherit;color:inherit;font-size:14px}
 button{cursor:pointer}
 a{color:var(--accent)}
@@ -30,23 +31,23 @@ a{color:var(--accent)}
 .side p{margin:0 0 10px}
 .logo{display:block;height:26px;width:auto}
 .side .logo{height:40px}
-.phone{width:390px;height:820px;max-height:calc(100vh - 48px);background:var(--bg);border:10px solid #1c1c1c;border-radius:48px;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.phone{width:390px;height:820px;max-height:calc(100vh - 48px);background:var(--bg);border:10px solid #16161a;border-radius:48px;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(60,30,10,.25)}
 @media (max-width:760px){.side{display:none}.stage{padding:0}.phone{width:100%;height:100vh;max-height:none;border:0;border-radius:0;box-shadow:none}}
 .status{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 6px;font-size:13px;font-weight:600;flex:none}
 .bar{display:flex;align-items:center;gap:10px;padding:6px 18px 10px;flex:none}
 .bar .role{margin-left:auto;font-size:12px;color:var(--muted);background:var(--surface2);border:0;border-radius:999px;padding:6px 12px}
 .back{background:none;border:0;font-size:20px;padding:0 6px 0 0;color:var(--fg)}
 .screen>*{flex-shrink:0}
-.leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.9) contrast(.85) saturate(.6)}
+.leaflet-tile-pane{filter:saturate(.75)}
 .screen{flex:1;overflow-y:auto;padding:4px 18px 24px;display:flex;flex-direction:column;gap:14px}
-.tabs{display:flex;border-top:1px solid var(--line);background:#0d0d0d;flex:none;padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs{display:flex;border-top:1px solid var(--line);background:#fff;flex:none;padding-bottom:env(safe-area-inset-bottom,0px)}
 .tabs button{flex:1;background:none;border:0;padding:10px 0 12px;color:var(--muted);font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:3px}
 .tabs button .ic{font-size:18px;line-height:1}
 .tabs button.on{color:var(--accent)}
 h2{font-size:22px;margin:0;letter-spacing:-.01em;line-height:1.2}
 h3{font-size:15px;margin:0}
 .sub{color:var(--muted);margin:0}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
 .row{display:flex;gap:10px;align-items:center}
 .sp{flex:1}
 .muted{color:var(--muted);font-size:12px}
@@ -61,11 +62,50 @@ h3{font-size:15px;margin:0}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:9px 14px;font-weight:500}
 .chip.on{border-color:var(--accent);background:var(--accent-soft);color:var(--fg)}
-.hero{background:linear-gradient(160deg,#1d1d1d,#111);border:1px solid var(--line);border-radius:22px;padding:18px;position:relative;overflow:hidden}
+.hero{background:linear-gradient(150deg,#fff6ef 0%,#ffe2cc 100%);border-color:#ffd9bf!important;border:1px solid var(--line);border-radius:22px;padding:18px;position:relative;overflow:hidden}
 .hero .bike{font-size:22px;font-weight:800}
 .hero .stats{display:flex;gap:18px;margin-top:14px}
 .hero .stats b{display:block;font-size:18px}
 .hero svg{position:absolute;right:10px;top:14px}
+.hero .heroimg{position:absolute;right:-14px;top:6px;width:178px;filter:drop-shadow(0 10px 12px rgba(120,50,10,.25));pointer-events:none}
+.hero .stats{position:relative;z-index:1}
+.rolecard .pic{width:100%;height:110px;object-fit:cover;border-radius:14px;margin-bottom:8px;background:#f2f2f4}
+.thumb{width:64px;height:46px;object-fit:contain;border-radius:10px;background:#f4f4f6;flex-shrink:0}
+.thumb.cover{object-fit:cover}
+.dashpic{display:flex;gap:12px;align-items:center;text-align:left}
+.dashpic img{width:56px;height:76px;object-fit:cover;border-radius:10px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tile{position:relative;background:#f6f7f9;border:0;border-radius:18px;padding:12px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;font-weight:600;line-height:1.2;text-align:center;color:var(--fg)}
+.tile .em{font-size:30px;line-height:1;filter:drop-shadow(0 4px 4px rgba(0,0,0,.12))}
+.tile .badge{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.tile .badge.g{background:var(--ok)}
+.tile:hover{background:var(--accent-soft)}
+.sheet{background:#fff;border-radius:24px 24px 18px 18px;box-shadow:0 -6px 24px rgba(20,20,30,.10);padding:8px 16px 16px;margin-top:-34px;position:relative;z-index:500;display:grid;gap:14px}
+.sheet .grab{width:40px;height:4px;border-radius:9px;background:#dedee3;margin:0 auto}
+.map.tall{height:250px;margin:0 -18px;border-radius:0;border:0;isolation:isolate}
+.map.tall .leaflet-bottom{bottom:34px}
+.prog{display:grid;grid-template-columns:repeat(4,1fr);position:relative}
+.prog .ln{position:absolute;left:12.5%;right:12.5%;top:21px;height:4px;background:#ececef;border-radius:9px}
+.prog .ln i{display:block;height:100%;background:var(--grad);border-radius:9px;transition:width .5s}
+.prog .nd{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10.5px;font-weight:600;color:var(--muted);text-align:center;z-index:1}
+.prog .nd span{width:46px;height:46px;border-radius:50%;background:#f2f2f4;display:flex;align-items:center;justify-content:center;font-size:21px;border:3px solid #fff}
+.prog .nd.done span{background:var(--accent-soft)}
+.prog .nd.done{color:var(--fg)}
+.prog .nd.now span{background:var(--accent);box-shadow:0 0 0 0 rgba(237,103,32,.5);animation:pulse 1.6s infinite}
+.prog .nd.now{color:var(--accent)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(237,103,32,.45)}100%{box-shadow:0 0 0 14px rgba(237,103,32,0)}}
+.hope{background:linear-gradient(135deg,#e9f8ef,#f4fbf6);border:1px solid #cdeedb;border-radius:16px;padding:12px 14px;font-size:13px;display:flex;gap:10px;align-items:flex-start}
+.hope .em{font-size:22px;line-height:1}
+.tech{display:flex;gap:12px;align-items:center}
+.ava{width:46px;height:46px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0}
+.ibtn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:17px}
+.feed{display:grid;gap:10px}
+.feed div{display:grid;grid-template-columns:44px 1fr;gap:8px;font-size:12.5px}
+.feed time{color:var(--muted);font-variant-numeric:tabular-nums}
+.fare{display:grid;gap:6px;font-size:13px}
+.fare .row b{font-variant-numeric:tabular-nums}
+.fare .tot{border-top:1px dashed var(--line);padding-top:8px;font-weight:800}
+.banner{width:100%;height:130px;object-fit:cover;border-radius:18px;display:block}
 .big{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums}
 .ai{border-color:var(--accent)}
 .ai .tag{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
@@ -84,10 +124,10 @@ h3{font-size:15px;margin:0}
 .dot{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;z-index:1}
 .step.done .dot{background:var(--accent);border-color:var(--accent);color:#fff}
 .note{background:var(--accent-soft);border-radius:14px;padding:12px 14px;font-size:13px}
-.toast{position:absolute;left:16px;right:16px;bottom:84px;background:var(--surface2);border:1px solid var(--accent);border-radius:16px;padding:12px 14px;font-size:13px;z-index:1000;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.toast{position:absolute;left:16px;right:16px;bottom:84px;background:var(--surface2);border:1px solid var(--accent);border-radius:16px;padding:12px 14px;font-size:13px;z-index:1000;box-shadow:0 10px 30px rgba(0,0,0,.15)}
 .toast b{display:block;font-size:12px;color:var(--accent);margin-bottom:2px}
 .roles{display:grid;gap:12px}
-.rolecard{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px;display:grid;gap:4px}
+.rolecard{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px;display:grid;gap:4px;box-shadow:var(--shadow)}
 .rolecard:hover{border-color:var(--accent)}
 .rolecard .t{font-size:17px;font-weight:700}
 .rolecard .ic{font-size:26px}
@@ -97,9 +137,9 @@ h3{font-size:15px;margin:0}
 .stepper{display:flex;align-items:center;gap:10px}
 .stepper button{width:34px;height:34px;border-radius:50%;border:0;background:var(--surface2);font-size:18px;font-weight:700}
 .switch{width:44px;height:26px;border-radius:999px;background:var(--surface2);border:0;position:relative}
-.switch::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#777;transition:left .15s}
+.switch::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s}
 .switch.on{background:var(--accent)}.switch.on::after{left:21px;background:#fff}
-.stars button{background:none;border:0;font-size:28px;color:#444;padding:0 2px}
+.stars button{background:none;border:0;font-size:28px;color:#d4d4da;padding:0 2px}
 .stars button.on{color:var(--accent)}
 table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
 th{text-align:left;color:var(--muted);font-weight:600;padding:6px 4px;border-bottom:1px solid var(--line)}
@@ -107,16 +147,16 @@ td{padding:8px 4px;border-bottom:1px solid var(--line);vertical-align:top}
 tr:last-child td{border-bottom:0}
 .meter{height:6px;background:var(--surface2);border-radius:99px;overflow:hidden}
 .meter i{display:block;height:100%;background:var(--grad)}
-.concept{font-size:10px;color:#666;text-align:center;padding:2px 0 0}
-.map{height:220px;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#111}
+.concept{font-size:10px;color:#9a9aa3;text-align:center;padding:2px 0 0}
+.map{height:220px;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#eef0f2}
 .map.sm{height:150px}
-.leaflet-container{background:#111;font-family:var(--font)}
-.leaflet-control-attribution{font-size:9px!important;background:rgba(0,0,0,.6)!important;color:#888!important}
-.leaflet-control-attribution a{color:#aaa!important}
+.leaflet-container{background:#eef0f2;font-family:var(--font)}
+.leaflet-control-attribution{font-size:9px!important;background:rgba(255,255,255,.75)!important;color:#777!important}
+.leaflet-control-attribution a{color:#777!important}
 .pin{width:16px;height:16px;border-radius:50%;background:#ed6720;border:3px solid #fff;box-shadow:0 0 0 6px rgba(237,103,32,.3)}
-.spin{width:12px;height:12px;border-radius:50%;background:#666;border:2px solid #222}
+.spin{width:12px;height:12px;border-radius:50%;background:#9a9aa3;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .spin.ok{background:#4fc98b}.spin.bad{background:#f27d7d}.spin.best{width:18px;height:18px;background:#fc5208;border:3px solid #fff}
-.leaflet-tooltip{background:#1f1f1f;color:#fff;border:1px solid #333;font-size:11px;font-weight:600;padding:3px 6px}
+.leaflet-tooltip{background:#fff;color:#16161a;border:1px solid #e3e3e8;box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:11px;font-weight:600;padding:3px 6px}
 .leaflet-tooltip:before{display:none}
 .addr{display:flex;gap:8px;align-items:flex-start;font-size:13px}
 @media (prefers-reduced-motion:no-preference){.screen>*{animation:in .25s ease both}@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
@@ -175,6 +215,7 @@ const S={
     {id:'WC-879',shop:'kh',job:'OC-2361',issue:'brake',amount:430000,status:'approved'}
   ]
 };
+const BIKEIMG={'Quantum S2':{src:'img-s2-blue.webp'},'Quantum S1':{src:'img-s1-orange.webp'},'Weaver 200':{src:'img-weaver.webp',cover:true}};
 const STAGES=['Bike received','Checking the fault','Repairing','Ready for pickup'];
 const vnd=n=>n.toLocaleString('vi-VN')+' ₫';
 const shop=id=>SHOPS.find(s=>s.id===id);
@@ -198,7 +239,7 @@ function deadlines(){
 /* hours from now until the bike is ready: ride there, wait for a technician, wait for parts, repair */
 function plan(s,issue){
   const iss=ISSUES[issue],d=km(ME,s),ride=rideMin(d)/60;
-  const wait=s.free>0?0.3:(s.queue/Math.max(s.techs,1))*2;
+  const wait=S.flow.express?0.1:s.free>0?0.3:(s.queue/Math.max(s.techs,1))*2;
   const parts=iss.partKey&&!s.parts[iss.partKey]?30:0;
   const h=ride+wait+parts+iss.repair;
   return{d,ride,wait,parts,h,ready:at(h)};
@@ -273,9 +314,9 @@ function tab(k){if(S.role==='customer'){S.ctab=k;if(k==='service'&&!S.flow.step&
 function rolePicker(){
   return `<div style="padding-top:12px"><div class="eyebrow">OpenCare network</div><h2 style="margin-top:6px">Who are you today?</h2><p class="sub" style="margin-top:6px">One app, three views of the same repair.</p></div>
   <div class="roles">
-   <button class="rolecard" onclick="setRole('customer')"><span class="ic" aria-hidden="true">🛵</span><span class="t">I’m a customer</span><span class="muted">Minh, Quantum S2 owner in Quận 7. Report a problem and get matched to a shop that can finish on time.</span></button>
-   <button class="rolecard" onclick="setRole('dealer')"><span class="ic" aria-hidden="true">🔧</span><span class="t">I’m a dealer</span><span class="muted">See bikes booked to your shop, update repairs, report free technicians and parts.</span></button>
-   <button class="rolecard" onclick="setRole('hq')"><span class="ic" aria-hidden="true">🏢</span><span class="t">I’m Dat Bike HQ</span><span class="muted">Watch quality across the network and approve warranty payments to dealers.</span></button>
+   <button class="rolecard" onclick="setRole('customer')"><img class="pic" src="img-rider.webp" alt="" onerror="this.remove()"><span class="t">I’m a customer</span><span class="muted">Minh, Quantum S2 owner in Quận 7. Report a problem and get matched to a shop that can finish on time.</span></button>
+   <button class="rolecard" onclick="setRole('dealer')"><img class="pic" src="img-workshop.webp" alt="" onerror="this.remove()"><span class="t">I’m a dealer</span><span class="muted">See bikes booked to your shop, update repairs, report free technicians and parts.</span></button>
+   <button class="rolecard" onclick="setRole('hq')"><img class="pic" src="img-hq.webp" alt="" onerror="this.remove()"><span class="t">I’m Dat Bike HQ</span><span class="muted">Watch quality across the network and approve warranty payments to dealers.</span></button>
   </div><p class="concept">Concept prototype · simulated shop data · not an official Dat Bike product</p>`;
 }
 
@@ -285,14 +326,18 @@ function bikeSvg(){return `<svg width="118" height="71" viewBox="0 0 150 90" ari
 function cHome(){
   const j=S.myJob,h=now().getHours();
   return `<div><p class="sub">${h<12?'Good morning':h<18?'Good afternoon':'Good evening'},</p><h2>${ME.name}</h2></div>
-  <div class="hero">${bikeSvg()}<div class="eyebrow">My Dat Bike</div><div class="bike">${ME.bike}</div><div class="muted">${ME.plate}</div><div class="muted">Warranty until 06/2028</div>
+  <div class="hero"><img class="heroimg" src="img-s2-blue.webp" alt="Quantum S2 in blue" onerror="this.outerHTML=bikeSvg()"><div class="eyebrow">My Dat Bike</div><div class="bike">${ME.bike}</div><div class="muted">${ME.plate}</div><div class="muted">Warranty until 06/2028</div>
   <div class="stats"><div><span class="muted">Battery</span><b>${ME.battery}%</b></div><div><span class="muted">Odometer</span><b>${ME.km.toLocaleString('en-US')} km</b></div><div><span class="muted">Points</span><b style="color:var(--accent)">${S.points.toLocaleString('en-US')}</b></div></div></div>
   ${j?`<div class="card ai" onclick="tab('track')" style="cursor:pointer"><div class="row"><div><div class="tag">Repair in progress</div><h3 style="margin-top:4px">${esc(STAGES[Math.min(j.status,3)])}</h3><div class="muted">${esc(shop(j.shop).name)} · ready ${esc(j.etaText)}</div></div><span class="sp"></span><span style="font-size:20px">›</span></div></div>`
   :`<button class="btn pri" onclick="startService()">⚠ My bike has a problem</button>`}
+  <div class="card"><h3 style="margin-bottom:14px">What does your bike need?</h3><div class="tiles">${TILES.map(([em,t,b,act],i)=>`<button class="tile" onclick="${act}">${b?`<span class="badge ${b==='Free'?'g':''}">${b}</span>`:''}<span class="em" aria-hidden="true">${em}</span>${t}</button>`).join('')}</div></div>
   <div class="card"><div class="addr"><span aria-hidden="true">📍</span><div><b>Your location</b><div class="muted">${esc(ME.address)}</div></div></div><div id="map-home" class="map sm" style="margin-top:10px"></div><div class="muted" style="margin-top:8px">${SHOPS.length} OpenCare points in range · nearest ${Math.min(...SHOPS.map(s=>km(ME,s))).toFixed(1)} km</div></div>
   <div class="card"><div class="row"><div><h3>Next maintenance</h3><div class="muted">Due at 5,000 km · about 2 weeks</div></div><span class="sp"></span><span class="pill p-acc">+100 pts</span></div></div>`;
 }
-function startService(silent){S.flow={issue:null,photo:false,deadline:'tmr17',sort:'ontime',pick:null,step:'issue'};S.ctab='service';if(!silent)render()}
+const TILES=[['🔧','Fix a problem',null,"startService()"],['⚡','Express repair','+99k',"svc('express')"],['🔋','Battery check','Free',"svc('battery')"],['🛠️','Maintenance','-20%',"soon('Maintenance booking','Book your 5,000 km service with 20% off at any OpenCare point.')"],['📅','Book ahead',null,"soon('Book ahead','Pick a day and time; the AI holds a technician for you.')"],['🚚','Pickup & return',null,"soon('Pickup & return','A partner picks up your bike and brings it back, from 49,000 ₫.')"],['🛡️','Warranty',null,"soon('Warranty','Quantum S2 · 59-X3 123.45 · covered until 06/2028.')"],['🎁','Rewards',null,"tab('rewards')"]];
+function soon(t,x){toast(t,x+' (concept: not in this prototype)')}
+function svc(k){startService(true);if(k==='express'){S.flow.express=true;toast('Express repair','Your bike skips the queue at the shop. Priority fee 99,000 ₫.')}else S.flow.issue=k;render()}
+function startService(silent){S.flow={issue:null,photo:false,deadline:'tmr17',sort:'ontime',pick:null,step:'issue',express:false};S.ctab='service';if(!silent)render()}
 function cService(){
   if(S.myJob&&!S.flow.step)return `<div class="card"><h3>You already have a repair booked</h3><p class="sub" style="margin-top:6px">Follow it in Tracking.</p><button class="btn pri" style="margin-top:12px" onclick="tab('track')">Open tracking</button></div>`;
   const f=S.flow;if(!f.step)f.step='issue';
@@ -300,7 +345,7 @@ function cService(){
     const iss=f.issue&&ISSUES[f.issue];
     return `<div><div class="eyebrow">Step 1 of 3</div><h2 style="margin-top:4px">What’s wrong with your ${ME.bike}?</h2></div>
     <div class="chips">${Object.entries(ISSUES).map(([k,v])=>`<button class="chip ${f.issue===k?'on':''}" onclick="S.flow.issue='${k}';render()">${esc(v.label)}</button>`).join('')}</div>
-    <button class="photo ${f.photo?'on':''}" onclick="S.flow.photo=!S.flow.photo;render()">${f.photo?'✓ dashboard_photo.jpg added':'📷 Add a photo of the dashboard (optional)'}</button>
+    <button class="photo ${f.photo?'on':''}" onclick="S.flow.photo=!S.flow.photo;render()">${f.photo?'<span class="dashpic"><img src="img-dash.webp" alt="Dashboard photo"><span><b>✓ Dashboard photo added</b><br><span class="muted">AI reads the warning icon from it</span></span></span>':'📷 Add a photo of the dashboard (optional)'}</button>
     ${iss?`<div class="card ai"><div class="tag">AI first check · ${iss.conf}% sure</div><h3 style="margin-top:6px">${esc(iss.dx)}</h3><div class="kv" style="margin-top:10px"><div>Part<b>${esc(iss.part)}</b></div><div>Repair time<b>~${iss.repair} h</b></div><div>Warranty<b>${iss.warranty?'Covered':'Not covered'}</b></div></div><p class="muted" style="margin:10px 0 0">A technician confirms this when you drop off the bike.</p></div>`:''}
     <button class="btn pri" ${f.issue?'':'disabled'} onclick="S.flow.step='deadline';render()">Next</button>`;
   }
@@ -324,25 +369,51 @@ function cService(){
       <div><h3>${esc(s.name)}</h3><div class="muted">${esc(s.kind)} · ${esc(s.addr)}</div></div>
       <div class="kv"><div>Distance<b>${r.d.toFixed(1)} km</b></div><div>Bikes waiting<b>${s.queue}</b></div><div>Ready<b>${label(r.ready)}</b></div></div>
       ${f.pick===s.id?`<div class="why">${esc(reason(r))}</div>`:''}</div>`}).join('')}</div>
+    ${fare(f.issue,f.express)}
     <button class="btn pri" onclick="book()">Book ${esc(shop(f.pick).name)}</button>`;
   }
 }
+function fare(k,ex){
+  const iss=ISSUES[k],sub=iss.labor+iss.partCost,cov=iss.warranty?sub:0,tot=sub-cov+(ex?99000:0);
+  return `<div class="card fare"><h3 style="margin-bottom:4px">Estimated cost</h3>
+  <div class="row"><span>Check & labor</span><span class="sp"></span><b>${vnd(iss.labor)}</b></div>
+  ${iss.partCost?`<div class="row"><span>${esc(iss.part)}</span><span class="sp"></span><b>${vnd(iss.partCost)}</b></div>`:''}
+  ${cov?`<div class="row" style="color:var(--ok)"><span>Dat Bike warranty</span><span class="sp"></span><b>−${vnd(cov)}</b></div>`:''}
+  ${ex?`<div class="row"><span>⚡ Express priority</span><span class="sp"></span><b>${vnd(99000)}</b></div>`:''}
+  <div class="row" style="color:var(--ok)"><span>AI matching & live tracking</span><span class="sp"></span><b>Free</b></div>
+  <div class="row tot"><span>You pay</span><span class="sp"></span><b style="font-size:16px">${tot?vnd(tot):'0 ₫ 🎉'}</b></div></div>`;
+}
+const hm=d=>`${pad(d.getHours())}:${pad(d.getMinutes())}`;
 function book(){
   const f=S.flow,s=shop(f.pick),p=plan(s,f.issue),drop=at(p.ride);
-  const j={id:'OC-'+(2400+Math.floor(Math.random()*90)),shop:s.id,customer:ME.name+' (you)',bike:ME.bike,issue:f.issue,status:0,etaText:label(p.ready),dropoff:label(drop),mine:true};
+  const j={id:'OC-'+(2400+Math.floor(Math.random()*90)),shop:s.id,customer:ME.name+' (you)',bike:ME.bike,issue:f.issue,status:0,etaText:label(p.ready),dropoff:label(drop),mine:true,express:!!f.express,log:[{t:hm(now()),x:'Booking confirmed. '+s.name+' is holding a slot for you.'}]};
   S.jobs.unshift(j);S.myJob=j;S.dealerShop=s.id;S.flow.step=null;S.ctab='track';s.queue+=1;
   render();toast('Booked',`Ride to ${s.name}, about ${rideMin(p.d)} min. Drop off by ${label(drop).split(', ')[1]}.`);
 }
 function cTrack(){
   const j=S.myJob;
-  if(!j)return `<div class="card"><h3>No repair in progress</h3><p class="sub" style="margin-top:6px">When you book a repair, you can follow it here step by step.</p><button class="btn pri" style="margin-top:12px" onclick="startService()">Book a repair</button></div>`;
+  if(!j)return `<div class="card"><h3>No repair in progress</h3><p class="sub" style="margin-top:6px">When you book a repair, you can follow it here step by step, like tracking a ride.</p><button class="btn pri" style="margin-top:12px" onclick="startService()">Book a repair</button></div>`;
   const s=shop(j.shop),iss=ISSUES[j.issue];
   if(j.status>=4)return cDone(j);
-  return `<div><div class="eyebrow">${esc(j.id)}</div><h2 style="margin-top:4px">${esc(STAGES[j.status])}</h2><p class="sub">${esc(s.name)} · ${esc(iss.dx)}</p></div>
-  <div class="card"><div class="row"><div><div class="muted">Expected ready</div><div class="big">${esc(j.etaText)}</div></div><span class="sp"></span><span class="pill p-ok">On time</span></div></div>
-  ${j.status===0?`<div id="map-track" class="map sm"></div><a class="btn sec" href="${gmaps(s)}" target="_blank" rel="noopener">Directions in Google Maps ↗</a>`:''}
-  <div class="card">${STAGES.map((st,i)=>`<div class="step ${i<=j.status?'done':''}"><div class="dot">${i<j.status?'✓':i+1}</div><div><b>${st}</b><div class="muted">${i===0?'Drop-off by '+esc(j.dropoff):i===1?'Technician confirms the AI check':i===2?esc(iss.part):'We send you a message'}</div></div></div>`).join('')}</div>
-  <button class="btn sec" onclick="advance('${j.id}')">⏩ Fast-forward (demo)</button>
+  const ICON=['🛵','🔍','🔧','✅'],SHORT=['Drop-off','Checking','Repairing','Ready'],PCT=[8,38,70,100];
+  const HEAD=['Ride over, your slot is held','Technician is checking your bike','Your bike is being repaired','Your bike is ready! 🎉'];
+  const HOPE=[
+    ['🙌',`A technician is waiting for you. Drop off by <b>${esc(j.dropoff.split(', ')[1]||j.dropoff)}</b> and you're on track for <b>${esc(j.etaText)}</b>.`],
+    ['👍',iss.partKey?`Good news: <b>${esc(iss.part)}</b> is in stock here. Still on track for <b>${esc(j.etaText)}</b>.`:`Good news: no new part needed. Still on track for <b>${esc(j.etaText)}</b>.`],
+    ['💪',`Almost there: about 70% done. We'll message you the moment it's ready.`],
+    ['🎉',`Finished on time and test-ridden. Come pick it up whenever you like.`]];
+  const st=Math.min(j.status,3);
+  return `<div id="map-track" class="map tall"></div>
+  <div class="sheet"><div class="grab"></div>
+   <div class="row"><div><div class="eyebrow">${esc(j.id)}${j.express?' · ⚡ Express':''}</div><h2 style="margin-top:4px;font-size:20px">${HEAD[st]}</h2><div class="muted">${esc(s.name)}</div></div><span class="sp"></span><div style="text-align:right"><div class="muted">Ready</div><b style="font-size:18px">${esc(j.etaText.split(', ')[1]||j.etaText)}</b><div><span class="pill p-ok">On time</span></div></div></div>
+   <div class="prog"><div class="ln"><i style="width:${[0,33.3,66.6,100][st]}%"></i></div>${ICON.map((ic,i)=>`<div class="nd ${i<st?'done':i===st?'now':''}"><span>${i<st?'✓':ic}</span>${SHORT[i]}</div>`).join('')}</div>
+   <div class="hope"><span class="em">${HOPE[st][0]}</span><span>${HOPE[st][1]}</span></div>
+   <div class="tech"><div class="ava">KN</div><div><b>Khoa Nguyễn</b><div class="muted">Dat Bike certified tech · ★ 4.9 · 312 repairs</div></div><span class="sp"></span><button class="ibtn" aria-label="Chat" onclick="toast('Chat','Khoa: Hi Minh, I will send photos when the old part comes off.')">💬</button><button class="ibtn" aria-label="Call" onclick="toast('Call','Calling the shop (demo).')">📞</button></div>
+   <div class="row" style="gap:12px"><img class="thumb" src="img-s2-blue.webp" alt="" onerror="this.remove()"><div><b>${esc(ME.bike)}</b><div class="muted">${esc(ME.plate)} · ${esc(iss.dx)}</div></div></div>
+   ${st===0?`<a class="btn pri" href="${gmaps(s)}" target="_blank" rel="noopener">Directions in Google Maps ↗</a>`:''}
+  </div>
+  <div class="card"><h3 style="margin-bottom:10px">Live updates</h3><div class="feed">${(j.log||[]).slice().reverse().map(e=>`<div><time>${e.t}</time><span>${esc(e.x)}</span></div>`).join('')}</div></div>
+  <button class="btn sec" onclick="advance('${j.id}')">⏩ Next step (demo)</button>
   <p class="muted" style="text-align:center;margin:0">Or switch to the Dealer view and update the repair there.</p>`;
 }
 function cDone(j){
@@ -363,6 +434,7 @@ function cRewards(){
 function advance(id){
   const j=S.jobs.find(x=>x.id===id);if(!j)return;
   j.status=Math.min(j.status+1,4);
+  if(j.log)j.log.push({t:hm(now()),x:['','Bike checked in. Technician Khoa is reading the error log.','Fault confirmed: '+ISSUES[j.issue].dx+'. Repair started.','Repair done and test-ridden. Ready for pickup!','Handed over. Have a good ride!'][j.status]});
   if(j.mine){
     if(j.status===4){S.points+=150;const iss=ISSUES[j.issue];if(iss.warranty)S.claims.unshift({id:'WC-'+(882+S.claims.length),shop:j.shop,job:j.id,issue:j.issue,amount:iss.labor+iss.partCost,status:'pending'})}
     if(S.role==='customer')toast('Update from '+shop(j.shop).name,j.status===4?'Your bike is ready for pickup.':STAGES[j.status]+'.');
@@ -374,8 +446,8 @@ function advance(id){
 function dealer(){return S.dtab==='queue'?dQueue():dCapacity()}
 function dQueue(){
   const s=shop(S.dealerShop),jobs=S.jobs.filter(j=>j.shop===S.dealerShop);
-  return `<div><div class="eyebrow">${esc(s.kind)}</div><h2 style="margin-top:4px">${esc(s.name)}</h2><p class="sub">${esc(s.addr)} · ${jobs.filter(j=>j.status<4).length} bikes in the shop</p></div>
-  <div class="list">${jobs.length?jobs.map(j=>{const iss=ISSUES[j.issue];return `<div class="card" style="${j.mine?'border-color:var(--accent)':''}"><div class="row"><b>${esc(j.id)}</b>${j.mine?'<span class="pill p-acc">New via app</span>':''}<span class="sp"></span><span class="pill ${j.status>=4?'p-ok':'p-warn'}">${esc(j.status>=4?'Handed over':STAGES[j.status])}</span></div>
+  return `<img class="banner" src="img-workshop.webp" alt="" onerror="this.remove()"><div><div class="eyebrow">${esc(s.kind)}</div><h2 style="margin-top:4px">${esc(s.name)}</h2><p class="sub">${esc(s.addr)} · ${jobs.filter(j=>j.status<4).length} bikes in the shop</p></div>
+  <div class="list">${jobs.length?jobs.map(j=>{const iss=ISSUES[j.issue];return `<div class="card" style="${j.mine?'border-color:var(--accent)':''}"><div class="row" style="gap:10px"><img class="thumb ${BIKEIMG[j.bike]&&BIKEIMG[j.bike].cover?'cover':''}" src="${BIKEIMG[j.bike]?BIKEIMG[j.bike].src:'img-s2-blue.webp'}" alt="" onerror="this.remove()"><b>${esc(j.id)}</b>${j.mine?'<span class="pill p-acc">New via app</span>':''}<span class="sp"></span><span class="pill ${j.status>=4?'p-ok':'p-warn'}">${esc(j.status>=4?'Handed over':STAGES[j.status])}</span></div>
     <div class="kv" style="margin-top:10px"><div>Customer<b>${esc(j.customer)}</b></div><div>Bike<b>${esc(j.bike)}</b></div><div>Promised<b>${esc(j.etaText)}</b></div></div>
     <div class="muted" style="margin-top:8px">AI check: ${esc(iss.dx)} · ${esc(iss.part)}${iss.warranty?' · Warranty':''}</div>
     ${j.status<4?`<button class="btn pri" style="margin-top:12px" onclick="advance('${j.id}')">${j.status===3?'Hand over to customer':'Mark as: '+esc(STAGES[j.status+1])}</button>`:''}</div>`}).join(''):'<div class="card"><h3>No bikes booked yet</h3><p class="sub" style="margin-top:6px">Book a repair as the customer and it shows up here.</p></div>'}</div>`;
