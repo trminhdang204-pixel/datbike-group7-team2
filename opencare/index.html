@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dat Bike OpenCare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: one phone screen; on wide screens it sits in a phone frame beside a short note */
+:root{
+  --bg:#0a0a0a;--surface:#161616;--surface2:#1f1f1f;--line:#2a2a2a;
+  --fg:#ffffff;--muted:#9c9c9c;--accent:#f56c1f;--accent2:#ff8a47;--accent-soft:#2b1607;
+  --ok:#4fc98b;--ok-soft:#10261a;--warn:#f2b44e;--warn-soft:#2a200e;--bad:#f27d7d;--bad-soft:#2c1414;
+  --font:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:#050505;color:var(--fg);font-family:var(--font);font-size:14px;line-height:1.45}
+button,input,select{font-family:inherit;color:inherit;font-size:14px}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:48px;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
+.side{max-width:300px;color:var(--muted)}
+.side h1{color:var(--fg);font-size:28px;margin:8px 0;letter-spacing:-.01em}
+.side .wm{font-weight:800;letter-spacing:.06em;color:var(--fg)}
+.side .wm b{color:var(--accent)}
+.side p{margin:0 0 10px}
+.phone{width:390px;height:820px;max-height:calc(100vh - 48px);background:var(--bg);border:10px solid #1c1c1c;border-radius:48px;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+@media (max-width:760px){.side{display:none}.stage{padding:0}.phone{width:100%;height:100vh;max-height:none;border:0;border-radius:0;box-shadow:none}}
+.status{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 6px;font-size:13px;font-weight:600;flex:none}
+.status .r{display:flex;gap:6px;align-items:center}
+.bar{display:flex;align-items:center;gap:10px;padding:6px 18px 10px;flex:none}
+.wm{font-weight:800;letter-spacing:.06em;font-size:16px}
+.wm b{color:var(--accent)}
+.bar .role{margin-left:auto;font-size:12px;color:var(--muted);background:var(--surface2);border:0;border-radius:999px;padding:6px 12px}
+.back{background:none;border:0;font-size:20px;padding:0 6px 0 0;color:var(--fg)}
+.screen{flex:1;overflow-y:auto;padding:4px 18px 24px;display:flex;flex-direction:column;gap:14px}
+.tabs{display:flex;border-top:1px solid var(--line);background:#0d0d0d;flex:none;padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs button{flex:1;background:none;border:0;padding:10px 0 12px;color:var(--muted);font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabs button .ic{font-size:18px;line-height:1}
+.tabs button.on{color:var(--accent)}
+h2{font-size:22px;margin:0;letter-spacing:-.01em;line-height:1.2}
+h3{font-size:15px;margin:0}
+.sub{color:var(--muted);margin:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px}
+.row{display:flex;gap:10px;align-items:center}
+.sp{flex:1}
+.muted{color:var(--muted);font-size:12px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.btn{border:0;border-radius:999px;padding:14px 18px;font-weight:700;width:100%;font-size:15px}
+.btn.pri{background:var(--accent);color:#fff}
+.btn.pri:active{background:var(--accent2)}
+.btn.sec{background:var(--surface2);color:var(--fg)}
+.btn.sm{width:auto;padding:8px 14px;font-size:13px}
+.btn:disabled{opacity:.4}
+.pill{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+.p-ok{background:var(--ok-soft);color:var(--ok)}.p-bad{background:var(--bad-soft);color:var(--bad)}.p-warn{background:var(--warn-soft);color:var(--warn)}.p-acc{background:var(--accent-soft);color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:9px 14px;font-weight:500}
+.chip.on{border-color:var(--accent);background:var(--accent-soft);color:var(--fg)}
+.hero{background:linear-gradient(160deg,#1d1d1d,#111);border:1px solid var(--line);border-radius:22px;padding:18px;position:relative;overflow:hidden}
+.hero .bike{font-size:22px;font-weight:800}
+.hero .stats{display:flex;gap:18px;margin-top:14px}
+.hero .stats b{display:block;font-size:18px}
+.hero svg{position:absolute;right:10px;top:14px;opacity:.95}
+.big{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums}
+.ai{border-color:var(--accent)}
+.ai .tag{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
+.seg{display:flex;background:var(--surface2);border-radius:999px;padding:4px}
+.seg button{flex:1;border:0;background:none;padding:9px;border-radius:999px;font-weight:600;color:var(--muted);font-size:13px}
+.seg button.on{background:var(--accent);color:#fff}
+.shop{display:grid;gap:10px;cursor:pointer}
+.shop.pick{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.kv{display:flex;gap:14px;flex-wrap:wrap}
+.kv div{font-size:11px;color:var(--muted)}
+.kv b{display:block;color:var(--fg);font-size:13px;font-variant-numeric:tabular-nums}
+.why{font-size:12px;color:var(--muted);border-left:2px solid var(--accent);padding-left:10px;border-radius:0}
+.steps{display:grid;gap:0}
+.step{display:grid;grid-template-columns:28px 1fr;gap:10px;padding-bottom:16px;position:relative}
+.step:not(:last-child)::after{content:"";position:absolute;left:13px;top:26px;bottom:0;width:2px;background:var(--line)}
+.step.done:not(:last-child)::after{background:var(--accent)}
+.dot{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;z-index:1}
+.step.done .dot{background:var(--accent);border-color:var(--accent);color:#fff}
+.step.now .dot{border-color:var(--accent);color:var(--accent)}
+.note{background:var(--accent-soft);border-radius:14px;padding:12px 14px;font-size:13px}
+.toast{position:absolute;left:16px;right:16px;bottom:84px;background:var(--surface2);border:1px solid var(--accent);border-radius:16px;padding:12px 14px;font-size:13px;z-index:20;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.toast b{display:block;font-size:12px;color:var(--accent);margin-bottom:2px}
+.roles{display:grid;gap:12px}
+.rolecard{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px;display:grid;gap:4px}
+.rolecard:hover{border-color:var(--accent)}
+.rolecard .t{font-size:17px;font-weight:700}
+.rolecard .ic{font-size:26px}
+.photo{border:1.5px dashed var(--line);border-radius:16px;padding:16px;text-align:center;color:var(--muted)}
+.photo.on{border-color:var(--accent);color:var(--fg);background:var(--accent-soft)}
+.list{display:grid;gap:10px}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper button{width:34px;height:34px;border-radius:50%;border:0;background:var(--surface2);font-size:18px;font-weight:700}
+.switch{width:44px;height:26px;border-radius:999px;background:var(--surface2);border:0;position:relative}
+.switch::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#777;transition:left .15s}
+.switch.on{background:var(--accent)}.switch.on::after{left:21px;background:#fff}
+.stars button{background:none;border:0;font-size:28px;color:#444;padding:0 2px}
+.stars button.on{color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+th{text-align:left;color:var(--muted);font-weight:600;padding:6px 4px;border-bottom:1px solid var(--line)}
+td{padding:8px 4px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+.meter{height:6px;background:var(--surface2);border-radius:99px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent)}
+.concept{font-size:10px;color:#666;text-align:center;padding:2px 0 0}
+@media (prefers-reduced-motion:no-preference){.screen>*{animation:in .25s ease both}@keyframes in{from{opacity:.0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="side">
+    <div class="wm">DAT BIKE<b>.</b> OpenCare</div>
+    <h1>Repair that fits your day</h1>
+    <p>Concept prototype for a university innovation project with Dat Bike. Not an official Dat Bike product. All data is sample data and the AI is scripted.</p>
+    <p>Switch roles at the top of the phone: Customer, Dealer or Dat Bike HQ. All three share the same data.</p>
+  </div>
+  <div class="phone" id="phone">
+    <div class="status"><span id="clock">9:41</span><span class="r">▂▄▆ 5G ▮</span></div>
+    <div class="bar" id="bar"></div>
+    <div class="screen" id="screen"></div>
+    <nav class="tabs" id="tabs"></nav>
+    <div class="toast" id="toast" hidden></div>
+  </div>
+</div>
+
+<script>
+/* ---------- sample data ---------- */
+const NOW=new Date('2026-11-18T09:41:00');
+const ISSUES={
+  brake:{label:'Brake warning light',dx:'Rear brake sensor fault',conf:86,part:'Brake sensor BS-02',partKey:'sensor',repair:1.5,warranty:true,labor:250000,partCost:180000},
+  start:{label:'Bike won’t start',dx:'Motor controller error',conf:72,part:'Controller board MC-7',partKey:'controller',repair:3,warranty:true,labor:400000,partCost:1650000},
+  battery:{label:'Battery drains fast',dx:'Battery cell imbalance',conf:79,part:'No part, recalibration',partKey:null,repair:2,warranty:true,labor:300000,partCost:0},
+  noise:{label:'Strange noise',dx:'Worn rear wheel bearing',conf:81,part:'Wheel bearing WB-12',partKey:'bearing',repair:1,warranty:false,labor:150000,partCost:220000},
+  display:{label:'Display error',dx:'Display cable loose',conf:88,part:'No part, reconnect',partKey:null,repair:0.5,warranty:true,labor:100000,partCost:0}
+};
+const DEADLINES=[{k:'today',label:'Today, 20:00',h:10.3},{k:'tmr12',label:'Tomorrow, 12:00',h:26.3},{k:'tmr17',label:'Tomorrow, 17:00',h:31.3},{k:'none',label:'No rush',h:999}];
+const S={
+  role:null,ctab:'home',dtab:'queue',htab:'network',
+  flow:{issue:null,photo:false,deadline:'tmr17',sort:'ontime',pick:null},
+  points:1240,
+  shops:[
+    {id:'A',name:'Phu Nhuan EV Care',area:'Phú Nhuận',km:2.1,queue:7,techs:3,free:0,parts:{sensor:false,controller:false,bearing:true},rating:4.4,ontime:71,jobs:46,kind:'Certified partner'},
+    {id:'B',name:'Saigon Volt Service',area:'Bình Thạnh',km:5.0,queue:1,techs:3,free:2,parts:{sensor:true,controller:true,bearing:true},rating:4.8,ontime:96,jobs:58,kind:'Certified partner'},
+    {id:'C',name:'Dat Bike Store Tân Bình',area:'Tân Bình',km:3.4,queue:5,techs:4,free:1,parts:{sensor:false,controller:true,bearing:true},rating:4.7,ontime:89,jobs:112,kind:'Dat Bike 3S store'},
+    {id:'D',name:'Go Vap Moto EV',area:'Gò Vấp',km:7.8,queue:2,techs:2,free:0,parts:{sensor:true,controller:false,bearing:true},rating:4.5,ontime:84,jobs:31,kind:'Certified partner'}
+  ],
+  jobs:[
+    {id:'OC-2391',shop:'B',customer:'Trần Huy',bike:'Weaver 200',issue:'noise',status:2,eta:'11:30',mine:false},
+    {id:'OC-2392',shop:'B',customer:'Lê Ngọc',bike:'Quantum S1',issue:'display',status:1,eta:'10:45',mine:false}
+  ],
+  claims:[
+    {id:'WC-881',shop:'C',job:'OC-2370',issue:'start',amount:2050000,status:'pending'},
+    {id:'WC-879',shop:'A',job:'OC-2361',issue:'brake',amount:430000,status:'approved'}
+  ],
+  myJob:null,rated:0
+};
+const STAGES=['Bike received','Checking the fault','Repairing','Ready for pickup'];
+const vnd=n=>n.toLocaleString('vi-VN')+' ₫';
+const shop=id=>S.shops.find(s=>s.id===id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ETA in hours from now: wait for a free technician + parts delay + repair time */
+function eta(s,issue){
+  const iss=ISSUES[issue];
+  const wait=s.free>0?1.3:(s.queue/Math.max(s.techs,1))*2.2;
+  const parts=iss.partKey&&!s.parts[iss.partKey]?26:0;
+  return +(wait+parts+iss.repair).toFixed(1);
+}
+function fmtEta(h){const d=new Date(NOW.getTime()+h*3600e3);const day=d.getDate()===NOW.getDate()?'Today':d.getDate()===NOW.getDate()+1?'Tomorrow':d.toLocaleDateString('en-GB',{weekday:'short'});return `${day}, ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}
+function fmtDur(h){return h<24?`${Math.round(h*10)/10} h`:`${Math.round(h/24*10)/10} days`}
+function ranked(){
+  const f=S.flow,dl=DEADLINES.find(d=>d.k===f.deadline).h;
+  const list=S.shops.map(s=>{const e=eta(s,f.issue);return{s,e,meets:e<=dl,missBy:e-dl}});
+  if(f.sort==='near')list.sort((a,b)=>a.s.km-b.s.km);
+  else list.sort((a,b)=>(b.meets-a.meets)||(a.e-b.e)||(a.s.km-b.s.km));
+  return list;
+}
+function reason(r){
+  const iss=ISSUES[S.flow.issue],s=r.s;
+  const bits=[];
+  bits.push(s.free>0?`${s.free} technician${s.free>1?'s':''} free now`:`${s.queue} bikes ahead in the queue`);
+  if(iss.partKey)bits.push(s.parts[iss.partKey]?`${iss.part} in stock`:`${iss.part} must be ordered (+1 day)`);
+  bits.push(`${s.ontime}% of repairs finished on time`);
+  return bits.join(' · ');
+}
+
+/* ---------- shell ---------- */
+function toast(title,text){const t=document.getElementById('toast');t.innerHTML=`<b>${esc(title)}</b>${esc(text)}`;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,3200)}
+function render(){
+  const bar=document.getElementById('bar'),scr=document.getElementById('screen'),tabs=document.getElementById('tabs');
+  if(!S.role){bar.innerHTML=`<div class="wm">DAT BIKE<b>.</b></div>`;tabs.innerHTML='';tabs.hidden=true;scr.innerHTML=rolePicker();scr.scrollTop=0;return}
+  tabs.hidden=false;
+  const roleName={customer:'Customer',dealer:'Dealer',hq:'Dat Bike HQ'}[S.role];
+  bar.innerHTML=`<div class="wm">DAT BIKE<b>.</b></div><button class="role" onclick="setRole(null)">${roleName} ⇄</button>`;
+  const T={customer:[['home','⌂','Home'],['service','🔧','Service'],['track','◷','Tracking'],['rewards','★','Rewards']],dealer:[['queue','☰','Queue'],['capacity','⚙','Capacity']],hq:[['network','◉','Network'],['claims','₫','Warranty']]}[S.role];
+  const cur=S.role==='customer'?S.ctab:S.role==='dealer'?S.dtab:S.htab;
+  tabs.innerHTML=T.map(([k,ic,l])=>`<button class="${cur===k?'on':''}" onclick="tab('${k}')"><span class="ic" aria-hidden="true">${ic}</span>${l}</button>`).join('');
+  scr.innerHTML=S.role==='customer'?customer():S.role==='dealer'?dealer():hq();
+  scr.scrollTop=0;
+}
+function setRole(r){S.role=r;document.getElementById('toast').hidden=true;render()}
+function tab(k){if(S.role==='customer'){S.ctab=k;if(k==='service'&&!S.flow.step)S.flow.step='issue'}else if(S.role==='dealer')S.dtab=k;else S.htab=k;render()}
+function rolePicker(){
+  return `<div style="padding-top:12px"><div class="eyebrow">OpenCare network</div><h2 style="margin-top:6px">Who are you today?</h2><p class="sub" style="margin-top:6px">One app, three views of the same repair.</p></div>
+  <div class="roles">
+   <button class="rolecard" onclick="setRole('customer')"><span class="ic" aria-hidden="true">🛵</span><span class="t">I’m a customer</span><span class="muted">Report a problem, get matched to a shop that can finish on time, track the repair.</span></button>
+   <button class="rolecard" onclick="setRole('dealer')"><span class="ic" aria-hidden="true">🔧</span><span class="t">I’m a dealer</span><span class="muted">Saigon Volt Service: see today’s bikes, update repairs, report free technicians and parts.</span></button>
+   <button class="rolecard" onclick="setRole('hq')"><span class="ic" aria-hidden="true">🏢</span><span class="t">I’m Dat Bike HQ</span><span class="muted">Watch quality across the network and approve warranty payments to dealers.</span></button>
+  </div><p class="concept">Concept prototype · sample data · not an official Dat Bike product</p>`;
+}
+
+/* ---------- customer ---------- */
+function customer(){return({home:cHome,service:cService,track:cTrack,rewards:cRewards})[S.ctab]()}
+function bikeSvg(){return `<svg width="118" height="71" viewBox="0 0 150 90" aria-hidden="true"><circle cx="30" cy="66" r="18" fill="none" stroke="#444" stroke-width="6"/><circle cx="118" cy="66" r="18" fill="none" stroke="#444" stroke-width="6"/><path d="M30 66 L58 40 L96 40 L118 66" fill="none" stroke="#f56c1f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M52 40 L66 26 L88 26" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><rect x="60" y="42" width="34" height="14" rx="4" fill="#f56c1f"/></svg>`}
+function cHome(){
+  const j=S.myJob;
+  return `<div><p class="sub">Good morning,</p><h2>Minh</h2></div>
+  <div class="hero">${bikeSvg()}<div class="eyebrow">My bike</div><div class="bike">Quantum S2</div><div class="muted">59-X3 123.45</div><div class="muted">Warranty until 06/2028</div>
+  <div class="stats"><div><span class="muted">Battery</span><b>82%</b></div><div><span class="muted">Odometer</span><b>4,812 km</b></div><div><span class="muted">Points</span><b style="color:var(--accent)">${S.points.toLocaleString('en-US')}</b></div></div></div>
+  ${j?`<div class="card ai" onclick="tab('track')" style="cursor:pointer"><div class="row"><div><div class="tag">Repair in progress</div><h3 style="margin-top:4px">${esc(STAGES[j.status])}</h3><div class="muted">${esc(shop(j.shop).name)} · ready ${esc(j.etaText)}</div></div><span class="sp"></span><span style="font-size:20px">›</span></div></div>`
+  :`<button class="btn pri" onclick="startService()">⚠ My bike has a problem</button>`}
+  <div class="card"><div class="row"><div><h3>Next maintenance</h3><div class="muted">Due at 5,000 km · about 2 weeks</div></div><span class="sp"></span><span class="pill p-acc">+100 pts</span></div></div>
+  <div class="card"><div class="row"><div><h3>OpenCare near you</h3><div class="muted">4 certified service points within 8 km</div></div><span class="sp"></span><button class="btn sec sm" onclick="startService()">Book</button></div></div>`;
+}
+function startService(){S.flow={issue:null,photo:false,deadline:'tmr17',sort:'ontime',pick:null,step:'issue'};S.ctab='service';render()}
+function cService(){
+  if(S.myJob&&!S.flow.step)return `<div class="card"><h3>You already have a repair booked</h3><p class="sub" style="margin-top:6px">Follow it in Tracking.</p><button class="btn pri" style="margin-top:12px" onclick="tab('track')">Open tracking</button></div>`;
+  const f=S.flow;
+  if(!f.step)f.step='issue';
+  if(f.step==='issue'){
+    const iss=f.issue&&ISSUES[f.issue];
+    return `<div><div class="eyebrow">Step 1 of 3</div><h2 style="margin-top:4px">What’s wrong with your bike?</h2></div>
+    <div class="chips">${Object.entries(ISSUES).map(([k,v])=>`<button class="chip ${f.issue===k?'on':''}" onclick="S.flow.issue='${k}';render()">${esc(v.label)}</button>`).join('')}</div>
+    <button class="photo ${f.photo?'on':''}" onclick="S.flow.photo=!S.flow.photo;render()">${f.photo?'✓ dashboard_photo.jpg added':'📷 Add a photo of the dashboard (optional)'}</button>
+    ${iss?`<div class="card ai"><div class="tag">AI first check · ${iss.conf}% sure</div><h3 style="margin-top:6px">${esc(iss.dx)}</h3><div class="kv" style="margin-top:10px"><div>Part<b>${esc(iss.part)}</b></div><div>Repair time<b>~${iss.repair} h</b></div><div>Warranty<b>${iss.warranty?'Covered':'Not covered'}</b></div></div><p class="muted" style="margin:10px 0 0">A technician confirms this when you drop off the bike.</p></div>`:''}
+    <button class="btn pri" ${f.issue?'':'disabled'} onclick="S.flow.step='deadline';render()">Next</button>`;
+  }
+  if(f.step==='deadline'){
+    return `<div class="row"><button class="back" onclick="S.flow.step='issue';render()" aria-label="Back">←</button><div><div class="eyebrow">Step 2 of 3</div><h2 style="margin-top:4px">When do you need it back?</h2></div></div>
+    <div class="list">${DEADLINES.map(d=>`<button class="card row" style="text-align:left;${f.deadline===d.k?'border-color:var(--accent)':''}" onclick="S.flow.deadline='${d.k}';render()"><b>${d.label}</b><span class="sp"></span>${f.deadline===d.k?'<span class="pill p-acc">Selected</span>':''}</button>`).join('')}</div>
+    <div class="note">We match you with the shop most likely to finish <b>before your deadline</b>, not just the nearest one.</div>
+    <button class="btn pri" onclick="S.flow.step='match';S.flow.pick=null;render()">Find a shop</button>`;
+  }
+  if(f.step==='match'){
+    const list=ranked(),dl=DEADLINES.find(d=>d.k===f.deadline);
+    if(!f.pick)f.pick=list[0].s.id;
+    const best=list.find(r=>r.meets);
+    return `<div class="row"><button class="back" onclick="S.flow.step='deadline';render()" aria-label="Back">←</button><div><div class="eyebrow">Step 3 of 3</div><h2 style="margin-top:4px">Shops for “${esc(ISSUES[f.issue].label)}”</h2><div class="muted">Need it by ${esc(dl.label)}</div></div></div>
+    <div class="seg"><button class="${f.sort==='near'?'on':''}" onclick="S.flow.sort='near';S.flow.pick=null;render()">Nearest</button><button class="${f.sort==='ontime'?'on':''}" onclick="S.flow.sort='ontime';S.flow.pick=null;render()">On time ✦ AI</button></div>
+    ${!best?`<div class="card" style="border-color:var(--warn)"><h3>No shop can finish by ${esc(dl.label)}</h3><p class="sub" style="margin-top:6px">Earliest is ${fmtEta(Math.min(...list.map(r=>r.e)))}. Options: pick a later time, or use free pickup and a loan bike from Dat Bike Tân Bình.</p></div>`:''}
+    <div class="list">${list.map((r,i)=>{const s=r.s,top=f.sort==='ontime'&&i===0&&r.meets;return `<div class="card shop ${f.pick===s.id?'pick':''}" onclick="S.flow.pick='${s.id}';render()">
+      <div class="row">${top?'<span class="pill p-acc">✦ AI pick</span>':''}<span class="pill ${r.meets?'p-ok':'p-bad'}">${r.meets?'Ready in time':'Misses by '+fmtDur(r.missBy)}</span><span class="sp"></span><span class="muted">★ ${s.rating}</span></div>
+      <div><h3>${esc(s.name)}</h3><div class="muted">${esc(s.kind)} · ${esc(s.area)}</div></div>
+      <div class="kv"><div>Distance<b>${s.km} km</b></div><div>Bikes waiting<b>${s.queue}</b></div><div>Ready<b>${fmtEta(r.e)}</b></div></div>
+      ${f.pick===s.id?`<div class="why">${esc(reason(r))}</div>`:''}</div>`}).join('')}</div>
+    <button class="btn pri" onclick="book()">Book ${esc(shop(f.pick).name)}</button>`;
+  }
+}
+function book(){
+  const f=S.flow,s=shop(f.pick),e=eta(s,f.issue);
+  const j={id:'OC-24'+String(Math.floor(Math.random()*90+10)),shop:s.id,customer:'Minh (you)',bike:'Quantum S2',issue:f.issue,status:0,etaText:fmtEta(e),mine:true,dropoff:'Today, 10:30'};
+  S.jobs.unshift(j);S.myJob=j;S.flow.step=null;S.ctab='track';s.queue+=1;
+  render();toast('Booked','Drop off at '+s.name+' by 10:30. We will update you at every step.');
+}
+function cTrack(){
+  const j=S.myJob;
+  if(!j)return `<div class="card"><h3>No repair in progress</h3><p class="sub" style="margin-top:6px">When you book a repair, you can follow it here step by step.</p><button class="btn pri" style="margin-top:12px" onclick="startService()">Book a repair</button></div>`;
+  const s=shop(j.shop),iss=ISSUES[j.issue];
+  if(j.status>=4)return cDone(j);
+  return `<div><div class="eyebrow">${esc(j.id)}</div><h2 style="margin-top:4px">${esc(STAGES[j.status])}</h2><p class="sub">${esc(s.name)} · ${esc(iss.dx)}</p></div>
+  <div class="card"><div class="row"><div><div class="muted">Expected ready</div><div class="big">${esc(j.etaText)}</div></div><span class="sp"></span><span class="pill p-ok">On time</span></div></div>
+  <div class="card steps">${STAGES.map((st,i)=>`<div class="step ${i<j.status?'done':i===j.status?'now done':''}"><div class="dot">${i<j.status?'✓':i+1}</div><div><b>${st}</b><div class="muted">${i===0?'Drop-off '+esc(j.dropoff||'today'):i===1?'Technician confirms the AI check':i===2?esc(iss.part):'We send you a message'}</div></div></div>`).join('')}</div>
+  <button class="btn sec" onclick="advance('${j.id}')">⏩ Fast-forward (demo)</button>
+  <p class="muted" style="text-align:center;margin:0">Or switch to the Dealer view and update the repair there.</p>`;
+}
+function cDone(j){
+  const s=shop(j.shop),earned=j.earned||150;
+  return `<div style="text-align:center;padding-top:10px"><div style="font-size:44px">✅</div><h2 style="margin-top:6px">Your bike is ready</h2><p class="sub">${esc(s.name)} finished on time.</p></div>
+  <div class="card" style="text-align:center"><div class="muted">Points earned</div><div class="big" style="color:var(--accent)">+${earned}</div><div class="muted">Warranty repair + finished on time</div></div>
+  <div class="card" style="text-align:center"><h3>How was the service?</h3><div class="stars" style="margin-top:8px">${[1,2,3,4,5].map(n=>`<button class="${S.rated>=n?'on':''}" aria-label="${n} stars" onclick="S.rated=${n};render();toast('Thanks','Your rating helps Dat Bike keep OpenCare quality high.')">★</button>`).join('')}</div></div>
+  <button class="btn pri" onclick="S.myJob=null;S.rated=0;S.ctab='home';render()">Done</button>`;
+}
+function cRewards(){
+  return `<div><div class="eyebrow">Dat Bike Rewards</div><h2 style="margin-top:4px">${S.points.toLocaleString('en-US')} points</h2><p class="sub">Silver member · 760 points to Gold</p></div>
+  <div class="card"><div class="meter"><i style="width:${Math.min(100,S.points/20)}%"></i></div></div>
+  <h3>Earn points</h3>
+  <div class="list">${[['Scheduled maintenance','+100'],['Genuine accessories','+1 per 10,000 ₫'],['Refer a friend who buys','+500'],['Repair finished on time','+50']].map(([a,b])=>`<div class="card row"><span>${a}</span><span class="sp"></span><span class="pill p-acc">${b}</span></div>`).join('')}</div>
+  <h3>Use points</h3>
+  <div class="list">${[['Free maintenance check','800'],['20% off a helmet','500'],['Out-of-warranty labor voucher 100k ₫','1,000']].map(([a,b])=>`<div class="card row"><span>${a}</span><span class="sp"></span><b>${b} pts</b></div>`).join('')}</div>`;
+}
+function advance(id){
+  const j=S.jobs.find(x=>x.id===id);if(!j)return;
+  j.status=Math.min(j.status+1,4);
+  if(j.mine){
+    if(j.status===4){S.points+=150;j.earned=150;const iss=ISSUES[j.issue];if(iss.warranty)S.claims.unshift({id:'WC-'+(882+S.claims.length),shop:j.shop,job:j.id,issue:j.issue,amount:iss.labor+iss.partCost,status:'pending'})}
+    if(S.role==='customer')toast('Update from '+shop(j.shop).name,j.status===4?'Your bike is ready for pickup.':STAGES[j.status]+'.');
+  }
+  render();
+}
+
+/* ---------- dealer ---------- */
+const MYSHOP='B';
+function dealer(){return S.dtab==='queue'?dQueue():dCapacity()}
+function dQueue(){
+  const s=shop(MYSHOP),jobs=S.jobs.filter(j=>j.shop===MYSHOP);
+  return `<div><div class="eyebrow">${esc(s.kind)}</div><h2 style="margin-top:4px">${esc(s.name)}</h2><p class="sub">Today · ${jobs.filter(j=>j.status<4).length} bikes in the shop</p></div>
+  <div class="list">${jobs.map(j=>{const iss=ISSUES[j.issue];return `<div class="card" style="${j.mine?'border-color:var(--accent)':''}"><div class="row"><b>${esc(j.id)}</b>${j.mine?'<span class="pill p-acc">New via app</span>':''}<span class="sp"></span><span class="pill ${j.status>=4?'p-ok':'p-warn'}">${esc(j.status>=4?'Handed over':STAGES[j.status])}</span></div>
+    <div class="kv" style="margin-top:10px"><div>Customer<b>${esc(j.customer)}</b></div><div>Bike<b>${esc(j.bike)}</b></div><div>Promised<b>${esc(j.etaText||j.eta)}</b></div></div>
+    <div class="muted" style="margin-top:8px">AI check: ${esc(iss.dx)} · ${esc(iss.part)}${iss.warranty?' · Warranty':''}</div>
+    ${j.status<4?`<button class="btn pri" style="margin-top:12px" onclick="advance('${j.id}')">${j.status===3?'Hand over to customer':'Mark as: '+esc(STAGES[j.status+1])}</button>`:''}</div>`}).join('')}</div>`;
+}
+function dCapacity(){
+  const s=shop(MYSHOP);
+  return `<div><div class="eyebrow">Capacity</div><h2 style="margin-top:4px">What the AI sees</h2><p class="sub">Customers are matched to you when you can finish on time. Keep this up to date.</p></div>
+  <div class="card"><div class="row"><div><h3>Technicians free now</h3><div class="muted">of ${s.techs} on shift</div></div><span class="sp"></span><div class="stepper"><button aria-label="Fewer" onclick="cap(-1)">−</button><b class="big" style="font-size:22px">${s.free}</b><button aria-label="More" onclick="cap(1)">+</button></div></div></div>
+  <div class="card"><h3>Parts in stock</h3><div class="list" style="margin-top:10px">${[['sensor','Brake sensor BS-02'],['controller','Controller board MC-7'],['bearing','Wheel bearing WB-12']].map(([k,l])=>`<div class="row"><span>${l}</span><span class="sp"></span><button class="switch ${s.parts[k]?'on':''}" aria-label="${l} in stock" onclick="part('${k}')"></button></div>`).join('')}</div></div>
+  <div class="note">Try it: set technicians to 0 and turn off the brake sensor, then book as a customer. The AI stops recommending this shop.</div>
+  <div class="card"><div class="row"><div><h3>This month</h3><div class="muted">Service revenue from OpenCare</div></div><span class="sp"></span><b>${vnd(18650000)}</b></div></div>`;
+}
+function cap(d){const s=shop(MYSHOP);s.free=Math.max(0,Math.min(s.techs,s.free+d));render()}
+function part(k){const s=shop(MYSHOP);s.parts[k]=!s.parts[k];render()}
+
+/* ---------- HQ ---------- */
+function hq(){return S.htab==='network'?hNetwork():hClaims()}
+function hNetwork(){
+  const total=S.shops.reduce((a,s)=>a+s.jobs,0),avg=Math.round(S.shops.reduce((a,s)=>a+s.ontime*s.jobs,0)/total);
+  return `<div><div class="eyebrow">Dat Bike HQ</div><h2 style="margin-top:4px">OpenCare network</h2><p class="sub">Ho Chi Minh City · this month</p></div>
+  <div class="row" style="gap:10px"><div class="card" style="flex:1"><div class="muted">Repairs</div><div class="big">${total}</div></div><div class="card" style="flex:1"><div class="muted">On time</div><div class="big" style="color:var(--accent)">${avg}%</div></div></div>
+  <div class="card"><h3>Service points</h3><table style="margin-top:8px"><tr><th>Point</th><th>On time</th><th>★</th><th>Queue</th></tr>
+  ${S.shops.slice().sort((a,b)=>b.ontime-a.ontime).map(s=>`<tr><td><b>${esc(s.name)}</b><div class="muted">${esc(s.kind)}</div></td><td><span class="pill ${s.ontime>=85?'p-ok':'p-warn'}">${s.ontime}%</span></td><td>${s.rating}</td><td>${s.queue}</td></tr>`).join('')}</table></div>
+  <div class="card" style="border-color:var(--warn)"><div class="row"><span class="pill p-warn">Needs attention</span></div><h3 style="margin-top:8px">Phu Nhuan EV Care: 71% on time</h3><p class="sub" style="margin-top:4px">Often out of brake sensors. Suggest: stock 10 sensors and a 2-week SWAT coaching visit.</p></div>`;
+}
+function hClaims(){
+  const pend=S.claims.filter(c=>c.status==='pending');
+  return `<div><div class="eyebrow">Dat Bike HQ</div><h2 style="margin-top:4px">Warranty payments</h2><p class="sub">Dealers repair Dat Bikes under warranty. HQ checks and pays them.</p></div>
+  <div class="card"><div class="row"><div><div class="muted">Waiting for approval</div><div class="big">${pend.length}</div></div><span class="sp"></span><div style="text-align:right"><div class="muted">Amount</div><b>${vnd(pend.reduce((a,c)=>a+c.amount,0))}</b></div></div></div>
+  <div class="list">${S.claims.map(c=>{const iss=ISSUES[c.issue],s=shop(c.shop);return `<div class="card"><div class="row"><b>${esc(c.id)}</b><span class="sp"></span><span class="pill ${c.status==='pending'?'p-warn':c.status==='approved'?'p-ok':'p-bad'}">${c.status==='pending'?'Pending':c.status==='approved'?'Paid':'Flagged'}</span></div>
+    <div class="kv" style="margin-top:10px"><div>Shop<b>${esc(s.name)}</b></div><div>Job<b>${esc(c.job)}</b></div><div>Amount<b>${vnd(c.amount)}</b></div></div>
+    <div class="muted" style="margin-top:8px">${esc(iss.dx)} · labor ${vnd(iss.labor)}${iss.partCost?' + part '+vnd(iss.partCost):''} · matches AI check ✓</div>
+    ${c.status==='pending'?`<div class="row" style="margin-top:12px"><button class="btn pri sm" onclick="claim('${c.id}','approved')">Approve payment</button><button class="btn sec sm" onclick="claim('${c.id}','flagged')">Flag for review</button></div>`:''}</div>`}).join('')}</div>`;
+}
+function claim(id,st){const c=S.claims.find(x=>x.id===id);c.status=st;render();toast(st==='approved'?'Payment approved':'Claim flagged',st==='approved'?vnd(c.amount)+' goes to '+shop(c.shop).name+' this week.':'The dealer is asked for photos of the old part.')}
+
+render();
+</script>
+</body>
+</html>
