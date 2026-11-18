@@ -6,11 +6,14 @@
 <title>Dat Bike OpenCare</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 /* Layout: one phone screen; on wide screens it sits in a phone frame beside a short note */
 :root{
   --bg:#0a0a0a;--surface:#161616;--surface2:#1f1f1f;--line:#2a2a2a;
-  --fg:#ffffff;--muted:#9c9c9c;--accent:#f56c1f;--accent2:#ff8a47;--accent-soft:#2b1607;
+  --fg:#ffffff;--muted:#9c9c9c;--accent:#ed6720;--accent2:#fc5208;--red:#ad0802;--accent-soft:#2b1607;
+  --grad:linear-gradient(90deg,#ad0802,#fc5208);
   --ok:#4fc98b;--ok-soft:#10261a;--warn:#f2b44e;--warn-soft:#2a200e;--bad:#f27d7d;--bad-soft:#2c1414;
   --font:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:dark;
 }
@@ -19,20 +22,18 @@ html,body{margin:0;height:100%}
 body{background:#050505;color:var(--fg);font-family:var(--font);font-size:14px;line-height:1.45}
 button,input,select{font-family:inherit;color:inherit;font-size:14px}
 button{cursor:pointer}
+a{color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:48px;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
 .side{max-width:300px;color:var(--muted)}
-.side h1{color:var(--fg);font-size:28px;margin:8px 0;letter-spacing:-.01em}
-.side .wm{font-weight:800;letter-spacing:.06em;color:var(--fg)}
-.side .wm b{color:var(--accent)}
+.side h1{color:var(--fg);font-size:28px;margin:14px 0 8px;letter-spacing:-.01em}
 .side p{margin:0 0 10px}
+.logo{display:block;height:26px;width:auto}
+.side .logo{height:40px}
 .phone{width:390px;height:820px;max-height:calc(100vh - 48px);background:var(--bg);border:10px solid #1c1c1c;border-radius:48px;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.6)}
 @media (max-width:760px){.side{display:none}.stage{padding:0}.phone{width:100%;height:100vh;max-height:none;border:0;border-radius:0;box-shadow:none}}
 .status{display:flex;justify-content:space-between;align-items:center;padding:12px 24px 6px;font-size:13px;font-weight:600;flex:none}
-.status .r{display:flex;gap:6px;align-items:center}
 .bar{display:flex;align-items:center;gap:10px;padding:6px 18px 10px;flex:none}
-.wm{font-weight:800;letter-spacing:.06em;font-size:16px}
-.wm b{color:var(--accent)}
 .bar .role{margin-left:auto;font-size:12px;color:var(--muted);background:var(--surface2);border:0;border-radius:999px;padding:6px 12px}
 .back{background:none;border:0;font-size:20px;padding:0 6px 0 0;color:var(--fg)}
 .screen{flex:1;overflow-y:auto;padding:4px 18px 24px;display:flex;flex-direction:column;gap:14px}
@@ -48,11 +49,10 @@ h3{font-size:15px;margin:0}
 .sp{flex:1}
 .muted{color:var(--muted);font-size:12px}
 .eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
-.btn{border:0;border-radius:999px;padding:14px 18px;font-weight:700;width:100%;font-size:15px}
-.btn.pri{background:var(--accent);color:#fff}
-.btn.pri:active{background:var(--accent2)}
+.btn{border:0;border-radius:999px;padding:14px 18px;font-weight:700;width:100%;font-size:15px;text-align:center;text-decoration:none;display:block}
+.btn.pri{background:var(--grad);color:#fff}
 .btn.sec{background:var(--surface2);color:var(--fg)}
-.btn.sm{width:auto;padding:8px 14px;font-size:13px}
+.btn.sm{width:auto;padding:8px 14px;font-size:13px;display:inline-block}
 .btn:disabled{opacity:.4}
 .pill{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
 .p-ok{background:var(--ok-soft);color:var(--ok)}.p-bad{background:var(--bad-soft);color:var(--bad)}.p-warn{background:var(--warn-soft);color:var(--warn)}.p-acc{background:var(--accent-soft);color:var(--accent)}
@@ -63,35 +63,33 @@ h3{font-size:15px;margin:0}
 .hero .bike{font-size:22px;font-weight:800}
 .hero .stats{display:flex;gap:18px;margin-top:14px}
 .hero .stats b{display:block;font-size:18px}
-.hero svg{position:absolute;right:10px;top:14px;opacity:.95}
+.hero svg{position:absolute;right:10px;top:14px}
 .big{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums}
 .ai{border-color:var(--accent)}
 .ai .tag{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
 .seg{display:flex;background:var(--surface2);border-radius:999px;padding:4px}
 .seg button{flex:1;border:0;background:none;padding:9px;border-radius:999px;font-weight:600;color:var(--muted);font-size:13px}
-.seg button.on{background:var(--accent);color:#fff}
+.seg button.on{background:var(--grad);color:#fff}
 .shop{display:grid;gap:10px;cursor:pointer}
 .shop.pick{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
 .kv{display:flex;gap:14px;flex-wrap:wrap}
 .kv div{font-size:11px;color:var(--muted)}
 .kv b{display:block;color:var(--fg);font-size:13px;font-variant-numeric:tabular-nums}
 .why{font-size:12px;color:var(--muted);border-left:2px solid var(--accent);padding-left:10px;border-radius:0}
-.steps{display:grid;gap:0}
 .step{display:grid;grid-template-columns:28px 1fr;gap:10px;padding-bottom:16px;position:relative}
 .step:not(:last-child)::after{content:"";position:absolute;left:13px;top:26px;bottom:0;width:2px;background:var(--line)}
 .step.done:not(:last-child)::after{background:var(--accent)}
 .dot{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;z-index:1}
 .step.done .dot{background:var(--accent);border-color:var(--accent);color:#fff}
-.step.now .dot{border-color:var(--accent);color:var(--accent)}
 .note{background:var(--accent-soft);border-radius:14px;padding:12px 14px;font-size:13px}
-.toast{position:absolute;left:16px;right:16px;bottom:84px;background:var(--surface2);border:1px solid var(--accent);border-radius:16px;padding:12px 14px;font-size:13px;z-index:20;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.toast{position:absolute;left:16px;right:16px;bottom:84px;background:var(--surface2);border:1px solid var(--accent);border-radius:16px;padding:12px 14px;font-size:13px;z-index:1000;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 .toast b{display:block;font-size:12px;color:var(--accent);margin-bottom:2px}
 .roles{display:grid;gap:12px}
 .rolecard{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px;display:grid;gap:4px}
 .rolecard:hover{border-color:var(--accent)}
 .rolecard .t{font-size:17px;font-weight:700}
 .rolecard .ic{font-size:26px}
-.photo{border:1.5px dashed var(--line);border-radius:16px;padding:16px;text-align:center;color:var(--muted)}
+.photo{border:1.5px dashed var(--line);border-radius:16px;padding:16px;text-align:center;color:var(--muted);background:none}
 .photo.on{border-color:var(--accent);color:var(--fg);background:var(--accent-soft)}
 .list{display:grid;gap:10px}
 .stepper{display:flex;align-items:center;gap:10px}
@@ -103,24 +101,36 @@ h3{font-size:15px;margin:0}
 .stars button.on{color:var(--accent)}
 table{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
 th{text-align:left;color:var(--muted);font-weight:600;padding:6px 4px;border-bottom:1px solid var(--line)}
-td{padding:8px 4px;border-bottom:1px solid var(--line)}
+td{padding:8px 4px;border-bottom:1px solid var(--line);vertical-align:top}
 tr:last-child td{border-bottom:0}
 .meter{height:6px;background:var(--surface2);border-radius:99px;overflow:hidden}
-.meter i{display:block;height:100%;background:var(--accent)}
+.meter i{display:block;height:100%;background:var(--grad)}
 .concept{font-size:10px;color:#666;text-align:center;padding:2px 0 0}
-@media (prefers-reduced-motion:no-preference){.screen>*{animation:in .25s ease both}@keyframes in{from{opacity:.0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+.map{height:220px;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#111}
+.map.sm{height:150px}
+.leaflet-container{background:#111;font-family:var(--font)}
+.leaflet-control-attribution{font-size:9px!important;background:rgba(0,0,0,.6)!important;color:#888!important}
+.leaflet-control-attribution a{color:#aaa!important}
+.pin{width:16px;height:16px;border-radius:50%;background:#ed6720;border:3px solid #fff;box-shadow:0 0 0 6px rgba(237,103,32,.3)}
+.spin{width:12px;height:12px;border-radius:50%;background:#666;border:2px solid #222}
+.spin.ok{background:#4fc98b}.spin.bad{background:#f27d7d}.spin.best{width:18px;height:18px;background:#fc5208;border:3px solid #fff}
+.leaflet-tooltip{background:#1f1f1f;color:#fff;border:1px solid #333;font-size:11px;font-weight:600;padding:3px 6px}
+.leaflet-tooltip:before{display:none}
+.addr{display:flex;gap:8px;align-items:flex-start;font-size:13px}
+@media (prefers-reduced-motion:no-preference){.screen>*{animation:in .25s ease both}@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}
 </style>
 </head>
 <body>
 <div class="stage">
   <div class="side">
-    <div class="wm">DAT BIKE<b>.</b> OpenCare</div>
-    <h1>Repair that fits your day</h1>
-    <p>Concept prototype for a university innovation project with Dat Bike. Not an official Dat Bike product. All data is sample data and the AI is scripted.</p>
-    <p>Switch roles at the top of the phone: Customer, Dealer or Dat Bike HQ. All three share the same data.</p>
+    <img class="logo" alt="Dat Bike" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAAwBAMAAAB+u4zTAAAAGFBMVEXtZyDtZyDtZyDtZyDtZyDtZyDtZyDtZyDqxpAOAAAACHRSTlOQbCQA/NhItPPK+O4AAANWSURBVHja7ZdBUtRAGIW/TqJsHMgMbinDaLlDM8QDUCUHwBtQ5QU4CkfgCFyAGtStI7HcWjHCLBEirITJxEWnO90ZEtBiFlbZm3T+6X7pfu//X/eIiKp1gSLjHprDXNq/Beupzo8UNoE8OQd4G98P7HizDEgNT+ZDwjScD7fJfGDdcD6ZkP0vh/sqh/W+VN8J4PrGrP0eSiNazYbRIuCegtcBnsSDFIYvlovMXVwad0zYfCQdLB+VVnajhiLzydj50JSLgmBskFAkybcZnCJJXt4lP7yqm7M3rWC9XhStP66P7kXRsRkUSSA7aX6ecnQqxemHBZ8CPoUAKQG8SBIHYNwByHsW6oUMPk4rebsx4EIGXbZksDPaBRHzBoBwAohu1wG8tXLTNgXltl79QQJMcXWCuZ3Wofmy/X7dMvYhoYa9zVSmaX0XReMSlKQO3OopUYv0douJFezPWxmzF7fQwsNGrot363bYjdbvmIoJBevKZa8fH84Oe38sCTqy57LQqJgqT0d+eXjQeTmDO1zrDA8BHthxf9qomK9gzwGcEFivm5sO5nbJBo2ZINR57WQAKwB5YI+RwbjuBAW7jSpoLZ1toOT3i32YyeBTgG2bBBtrRxgGBnAShU5aKXtj8RbSQUwPs3LnZzcWhmYAZ0nqZECuGLf5rx4mCRsc1uzxoD6n7dDxW36xE/l11Q3/+izbryXVyDfI25NeGTiNVVNu1K2vPBPCHNbr7+vprqS9348dXxbOLMK0yQeLpfqKVfulSXf2qyoqAAJFkWd8y4TZabNb18zb0kuONDt7QJGWwtdISJsvUjlXCjYGGAHkG3q1AcAagBfrd8Xt5GPjisMH2sEAvKfgPtN7pgquAEzsrT5vZGFPqefJKWfdcmcTQycddOt7TRtgA8K4zFvbD+WbuCmodJ00X1KFlAYcBla8LJNB4w3aQ7RdFLdUZ+rb1i+fZvDRnev6yjh5v9eypz5TpLal+jNkG6utrh/Gn5oljXZU4S7qrWSZVehFBlxGO0BYVowvKqvRxjYx1vVV666DxWqZv4HMlN4KME1iwSBlEAMc5sBneQdzTkvUS1MnFbywU2iBoO5N1ybrYWWM7sU7EO8v7UOnHvSBHrCrDjPFk3FYLXcl4m+UOggpIF1AFAAAAABJRU5ErkJggg==">
+    <h1>OpenCare: repair that fits your day</h1>
+    <p>Concept prototype for a university innovation project with Dat Bike. Not an official Dat Bike product.</p>
+    <p>Store names and addresses come from Dat Bike’s public store list; map positions are approximate. Queues, technicians and parts are simulated. Distances and ready times are calculated live from your clock.</p>
+    <p>Switch roles at the top of the phone: Customer, Dealer or Dat Bike HQ.</p>
   </div>
   <div class="phone" id="phone">
-    <div class="status"><span id="clock">9:41</span><span class="r">▂▄▆ 5G ▮</span></div>
+    <div class="status"><span id="clock">--:--</span><span>▂▄▆ 5G ▮</span></div>
     <div class="bar" id="bar"></div>
     <div class="screen" id="screen"></div>
     <nav class="tabs" id="tabs"></nav>
@@ -129,8 +139,20 @@ tr:last-child td{border-bottom:0}
 </div>
 
 <script>
-/* ---------- sample data ---------- */
-const NOW=new Date('2026-11-18T09:41:00');
+const LOGO='<img class="logo" alt="Dat Bike" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAAAwBAMAAAB+u4zTAAAAGFBMVEXtZyDtZyDtZyDtZyDtZyDtZyDtZyDtZyDqxpAOAAAACHRSTlOQbCQA/NhItPPK+O4AAANWSURBVHja7ZdBUtRAGIW/TqJsHMgMbinDaLlDM8QDUCUHwBtQ5QU4CkfgCFyAGtStI7HcWjHCLBEirITJxEWnO90ZEtBiFlbZm3T+6X7pfu//X/eIiKp1gSLjHprDXNq/Beupzo8UNoE8OQd4G98P7HizDEgNT+ZDwjScD7fJfGDdcD6ZkP0vh/sqh/W+VN8J4PrGrP0eSiNazYbRIuCegtcBnsSDFIYvlovMXVwad0zYfCQdLB+VVnajhiLzydj50JSLgmBskFAkybcZnCJJXt4lP7yqm7M3rWC9XhStP66P7kXRsRkUSSA7aX6ecnQqxemHBZ8CPoUAKQG8SBIHYNwByHsW6oUMPk4rebsx4EIGXbZksDPaBRHzBoBwAohu1wG8tXLTNgXltl79QQJMcXWCuZ3Wofmy/X7dMvYhoYa9zVSmaX0XReMSlKQO3OopUYv0douJFezPWxmzF7fQwsNGrot363bYjdbvmIoJBevKZa8fH84Oe38sCTqy57LQqJgqT0d+eXjQeTmDO1zrDA8BHthxf9qomK9gzwGcEFivm5sO5nbJBo2ZINR57WQAKwB5YI+RwbjuBAW7jSpoLZ1toOT3i32YyeBTgG2bBBtrRxgGBnAShU5aKXtj8RbSQUwPs3LnZzcWhmYAZ0nqZECuGLf5rx4mCRsc1uzxoD6n7dDxW36xE/l11Q3/+izbryXVyDfI25NeGTiNVVNu1K2vPBPCHNbr7+vprqS9348dXxbOLMK0yQeLpfqKVfulSXf2qyoqAAJFkWd8y4TZabNb18zb0kuONDt7QJGWwtdISJsvUjlXCjYGGAHkG3q1AcAagBfrd8Xt5GPjisMH2sEAvKfgPtN7pgquAEzsrT5vZGFPqefJKWfdcmcTQycddOt7TRtgA8K4zFvbD+WbuCmodJ00X1KFlAYcBla8LJNB4w3aQ7RdFLdUZ+rb1i+fZvDRnev6yjh5v9eypz5TpLal+jNkG6utrh/Gn5oljXZU4S7qrWSZVehFBlxGO0BYVowvKqvRxjYx1vVV666DxWqZv4HMlN4KME1iwSBlEAMc5sBneQdzTkvUS1MnFbywU2iBoO5N1ybrYWWM7sU7EO8v7UOnHvSBHrCrDjPFk3FYLXcl4m+UOggpIF1AFAAAAABJRU5ErkJggg==">';
+/* ---------- the customer ---------- */
+const ME={name:'Minh',address:'1060 Nguyễn Văn Linh, P. Tân Phong, Quận 7, TP.HCM',lat:10.7298,lng:106.7036,bike:'Quantum S2',plate:'59-X3 123.45',km:4812,battery:82};
+/* ---------- service points: Dat Bike stores (public list, approximate positions) + simulated partner shops ---------- */
+const SHOPS=[
+  {id:'tp',name:'Tân Phong EV Care',kind:'Certified partner',addr:'Đường số 15, P. Tân Phong, Q.7',lat:10.7322,lng:106.7092,queue:10,techs:2,free:0,parts:{sensor:false,controller:false,bearing:true},rating:4.3,ontime:72,jobs:38,sim:true},
+  {id:'pmh',name:'Phú Mỹ Hưng Volt Service',kind:'Certified partner',addr:'Đường Nguyễn Lương Bằng, P. Tân Phú, Q.7',lat:10.7258,lng:106.7215,queue:1,techs:3,free:2,parts:{sensor:true,controller:true,bearing:true},rating:4.8,ontime:96,jobs:61,sim:true},
+  {id:'ntt',name:'Dat Bike Nguyễn Thị Thập',kind:'Dat Bike store',addr:'224 Nguyễn Thị Thập, P. Tân Thuận, TP.HCM',lat:10.7384,lng:106.7124,queue:5,techs:4,free:0,parts:{sensor:true,controller:true,bearing:true},rating:4.7,ontime:90,jobs:118},
+  {id:'va',name:'Dat Bike Vân Anh Huỳnh Tấn Phát',kind:'Dat Bike dealer',addr:'1310 Huỳnh Tấn Phát, P. Tân Mỹ, TP.HCM',lat:10.7158,lng:106.7372,queue:3,techs:2,free:1,parts:{sensor:false,controller:true,bearing:true},rating:4.6,ontime:87,jobs:54},
+  {id:'tqb',name:'Dat Bike Quang Phương Tạ Quang Bửu',kind:'Dat Bike dealer',addr:'787 Tạ Quang Bửu, P. Chánh Hưng, TP.HCM',lat:10.7392,lng:106.6655,queue:2,techs:2,free:1,parts:{sensor:true,controller:false,bearing:true},rating:4.5,ontime:88,jobs:47,salesOnly:true},
+  {id:'kh',name:'Dat Bike Green City Khánh Hội',kind:'Dat Bike dealer',addr:'235 Khánh Hội, P. Vĩnh Hội, TP.HCM',lat:10.7578,lng:106.6978,queue:4,techs:3,free:1,parts:{sensor:true,controller:true,bearing:true},rating:4.6,ontime:91,jobs:66},
+  {id:'bh',name:'Dat Bike Bình Hưng',kind:'Dat Bike dealer',addr:'843 Quốc lộ 50, Xã Bình Hưng, TP.HCM',lat:10.7172,lng:106.6566,queue:2,techs:2,free:1,parts:{sensor:true,controller:true,bearing:false},rating:4.5,ontime:86,jobs:39},
+  {id:'ntd',name:'Dat Bike Hồng Phương Nguyễn Thị Định',kind:'Dat Bike dealer',addr:'38 Nguyễn Thị Định, P. Bình Trưng, TP.HCM',lat:10.7868,lng:106.7598,queue:1,techs:2,free:2,parts:{sensor:true,controller:true,bearing:true},rating:4.7,ontime:93,jobs:44}
+].filter(s=>!s.salesOnly);
 const ISSUES={
   brake:{label:'Brake warning light',dx:'Rear brake sensor fault',conf:86,part:'Brake sensor BS-02',partKey:'sensor',repair:1.5,warranty:true,labor:250000,partCost:180000},
   start:{label:'Bike won’t start',dx:'Motor controller error',conf:72,part:'Controller board MC-7',partKey:'controller',repair:3,warranty:true,labor:400000,partCost:1650000},
@@ -138,134 +160,176 @@ const ISSUES={
   noise:{label:'Strange noise',dx:'Worn rear wheel bearing',conf:81,part:'Wheel bearing WB-12',partKey:'bearing',repair:1,warranty:false,labor:150000,partCost:220000},
   display:{label:'Display error',dx:'Display cable loose',conf:88,part:'No part, reconnect',partKey:null,repair:0.5,warranty:true,labor:100000,partCost:0}
 };
-const DEADLINES=[{k:'today',label:'Today, 20:00',h:10.3},{k:'tmr12',label:'Tomorrow, 12:00',h:26.3},{k:'tmr17',label:'Tomorrow, 17:00',h:31.3},{k:'none',label:'No rush',h:999}];
 const S={
   role:null,ctab:'home',dtab:'queue',htab:'network',
-  flow:{issue:null,photo:false,deadline:'tmr17',sort:'ontime',pick:null},
-  points:1240,
-  shops:[
-    {id:'A',name:'Phu Nhuan EV Care',area:'Phú Nhuận',km:2.1,queue:7,techs:3,free:0,parts:{sensor:false,controller:false,bearing:true},rating:4.4,ontime:71,jobs:46,kind:'Certified partner'},
-    {id:'B',name:'Saigon Volt Service',area:'Bình Thạnh',km:5.0,queue:1,techs:3,free:2,parts:{sensor:true,controller:true,bearing:true},rating:4.8,ontime:96,jobs:58,kind:'Certified partner'},
-    {id:'C',name:'Dat Bike Store Tân Bình',area:'Tân Bình',km:3.4,queue:5,techs:4,free:1,parts:{sensor:false,controller:true,bearing:true},rating:4.7,ontime:89,jobs:112,kind:'Dat Bike 3S store'},
-    {id:'D',name:'Go Vap Moto EV',area:'Gò Vấp',km:7.8,queue:2,techs:2,free:0,parts:{sensor:true,controller:false,bearing:true},rating:4.5,ontime:84,jobs:31,kind:'Certified partner'}
-  ],
+  flow:{issue:null,photo:false,deadline:null,sort:'ontime',pick:null,step:null},
+  points:1240,myJob:null,rated:0,dealerShop:'pmh',
   jobs:[
-    {id:'OC-2391',shop:'B',customer:'Trần Huy',bike:'Weaver 200',issue:'noise',status:2,eta:'11:30',mine:false},
-    {id:'OC-2392',shop:'B',customer:'Lê Ngọc',bike:'Quantum S1',issue:'display',status:1,eta:'10:45',mine:false}
+    {id:'OC-2391',shop:'pmh',customer:'Trần Huy',bike:'Weaver 200',issue:'noise',status:2,etaText:'Today, 15:30'},
+    {id:'OC-2392',shop:'pmh',customer:'Lê Ngọc',bike:'Quantum S1',issue:'display',status:1,etaText:'Today, 14:45'}
   ],
   claims:[
-    {id:'WC-881',shop:'C',job:'OC-2370',issue:'start',amount:2050000,status:'pending'},
-    {id:'WC-879',shop:'A',job:'OC-2361',issue:'brake',amount:430000,status:'approved'}
-  ],
-  myJob:null,rated:0
+    {id:'WC-881',shop:'ntt',job:'OC-2370',issue:'start',amount:2050000,status:'pending'},
+    {id:'WC-879',shop:'kh',job:'OC-2361',issue:'brake',amount:430000,status:'approved'}
+  ]
 };
 const STAGES=['Bike received','Checking the fault','Repairing','Ready for pickup'];
 const vnd=n=>n.toLocaleString('vi-VN')+' ₫';
-const shop=id=>S.shops.find(s=>s.id===id);
+const shop=id=>SHOPS.find(s=>s.id===id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
 
-/* ETA in hours from now: wait for a free technician + parts delay + repair time */
-function eta(s,issue){
-  const iss=ISSUES[issue];
-  const wait=s.free>0?1.3:(s.queue/Math.max(s.techs,1))*2.2;
-  const parts=iss.partKey&&!s.parts[iss.partKey]?26:0;
-  return +(wait+parts+iss.repair).toFixed(1);
+/* ---------- time and distance ---------- */
+const now=()=>new Date();
+function km(a,b){const R=6371,t=x=>x*Math.PI/180,dLa=t(b.lat-a.lat),dLo=t(b.lng-a.lng);const h=Math.sin(dLa/2)**2+Math.cos(t(a.lat))*Math.cos(t(b.lat))*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(h))*1.3}
+function rideMin(d){return Math.round(d/20*60)+4}
+function at(h){return new Date(now().getTime()+h*3600e3)}
+function label(d){const n=now(),tm=new Date(n);tm.setDate(n.getDate()+1);const day=d.toDateString()===n.toDateString()?'Today':d.toDateString()===tm.toDateString()?'Tomorrow':d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric'});return `${day}, ${pad(d.getHours())}:${pad(d.getMinutes())}`}
+function deadlines(){
+  const n=now(),out=[];
+  const mk=(dayOff,h,txt)=>{const d=new Date(n);d.setDate(n.getDate()+dayOff);d.setHours(h,0,0,0);return{k:txt,d,label:label(d)}};
+  if(n.getHours()<17)out.push(mk(0,20,'today'));
+  out.push(mk(1,12,'tmr12'),mk(1,17,'tmr17'));
+  out.push({k:'none',d:new Date(n.getTime()+30*864e5),label:'No rush'});
+  return out;
 }
-function fmtEta(h){const d=new Date(NOW.getTime()+h*3600e3);const day=d.getDate()===NOW.getDate()?'Today':d.getDate()===NOW.getDate()+1?'Tomorrow':d.toLocaleDateString('en-GB',{weekday:'short'});return `${day}, ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}
-function fmtDur(h){return h<24?`${Math.round(h*10)/10} h`:`${Math.round(h/24*10)/10} days`}
+/* hours from now until the bike is ready: ride there, wait for a technician, wait for parts, repair */
+function plan(s,issue){
+  const iss=ISSUES[issue],d=km(ME,s),ride=rideMin(d)/60;
+  const wait=s.free>0?0.3:(s.queue/Math.max(s.techs,1))*2;
+  const parts=iss.partKey&&!s.parts[iss.partKey]?30:0;
+  const h=ride+wait+parts+iss.repair;
+  return{d,ride,wait,parts,h,ready:at(h)};
+}
 function ranked(){
-  const f=S.flow,dl=DEADLINES.find(d=>d.k===f.deadline).h;
-  const list=S.shops.map(s=>{const e=eta(s,f.issue);return{s,e,meets:e<=dl,missBy:e-dl}});
-  if(f.sort==='near')list.sort((a,b)=>a.s.km-b.s.km);
-  else list.sort((a,b)=>(b.meets-a.meets)||(a.e-b.e)||(a.s.km-b.s.km));
-  return list;
+  const f=S.flow,dl=deadlines().find(x=>x.k===f.deadline)||deadlines()[0];
+  const list=SHOPS.map(s=>{const p=plan(s,f.issue);return{s,...p,meets:p.ready<=dl.d,missH:(p.ready-dl.d)/3600e3}});
+  if(f.sort==='near')list.sort((a,b)=>a.d-b.d);
+  else list.sort((a,b)=>(b.meets-a.meets)||(b.meets?(a.d+a.h*2)-(b.d+b.h*2):a.h-b.h));
+  return{list,dl};
 }
+function fmtDur(h){return h<1?Math.round(h*60)+' min':h<24?(Math.round(h*10)/10)+' h':(Math.round(h/24*10)/10)+' days'}
 function reason(r){
-  const iss=ISSUES[S.flow.issue],s=r.s;
-  const bits=[];
-  bits.push(s.free>0?`${s.free} technician${s.free>1?'s':''} free now`:`${s.queue} bikes ahead in the queue`);
-  if(iss.partKey)bits.push(s.parts[iss.partKey]?`${iss.part} in stock`:`${iss.part} must be ordered (+1 day)`);
-  bits.push(`${s.ontime}% of repairs finished on time`);
-  return bits.join(' · ');
+  const iss=ISSUES[S.flow.issue],s=r.s,b=[];
+  b.push(`${r.d.toFixed(1)} km, about ${rideMin(r.d)} min by bike`);
+  b.push(s.free>0?`${s.free} technician${s.free>1?'s':''} free now`:`${s.queue} bikes ahead, about ${fmtDur(r.wait)} wait`);
+  if(iss.partKey)b.push(s.parts[iss.partKey]?`${iss.part} in stock`:`${iss.part} must be ordered (+1 day)`);
+  b.push(`${s.ontime}% of repairs finished on time`);
+  return b.join(' · ');
 }
+
+/* ---------- maps ---------- */
+let maps=[];
+function clearMaps(){maps.forEach(m=>m.remove());maps=[]}
+function baseMap(id,opts){
+  const el=document.getElementById(id);if(!el||!window.L)return null;
+  const m=L.map(el,{zoomControl:false,attributionControl:true,...opts});
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19,attribution:'© OpenStreetMap © CARTO'}).addTo(m);
+  maps.push(m);return m;
+}
+const meIcon=()=>L.divIcon({className:'',html:'<div class="pin"></div>',iconSize:[16,16],iconAnchor:[8,8]});
+const shopIcon=c=>L.divIcon({className:'',html:`<div class="spin ${c}"></div>`,iconSize:[18,18],iconAnchor:[9,9]});
+function drawMaps(){
+  clearMaps();
+  if(document.getElementById('map-home')){const m=baseMap('map-home',{dragging:false,scrollWheelZoom:false});if(m){m.setView([ME.lat,ME.lng],14);L.marker([ME.lat,ME.lng],{icon:meIcon()}).addTo(m).bindTooltip('You',{permanent:true,direction:'top',offset:[0,-8]});SHOPS.forEach(s=>L.marker([s.lat,s.lng],{icon:shopIcon('')}).addTo(m))}}
+  if(document.getElementById('map-match')){
+    const m=baseMap('map-match');if(!m)return;const {list}=ranked(),pick=S.flow.pick;
+    const pts=[[ME.lat,ME.lng]];
+    L.marker([ME.lat,ME.lng],{icon:meIcon()}).addTo(m).bindTooltip('You',{permanent:true,direction:'top',offset:[0,-8]});
+    list.forEach((r,i)=>{const c=r.s.id===pick?'best':r.meets?'ok':'bad';const mk=L.marker([r.s.lat,r.s.lng],{icon:shopIcon(c)}).addTo(m);mk.bindTooltip(r.s.name.replace('Dat Bike ',''),{permanent:r.s.id===pick,direction:'top',offset:[0,-8]});mk.on('click',()=>{S.flow.pick=r.s.id;render()});if(r.d<9)pts.push([r.s.lat,r.s.lng])});
+    const p=shop(pick);if(p)L.polyline([[ME.lat,ME.lng],[p.lat,p.lng]],{color:'#fc5208',weight:3,dashArray:'6 6'}).addTo(m);
+    m.fitBounds(pts,{padding:[24,24]});
+  }
+  if(document.getElementById('map-track')&&S.myJob){
+    const m=baseMap('map-track');if(!m)return;const s=shop(S.myJob.shop);
+    L.marker([ME.lat,ME.lng],{icon:meIcon()}).addTo(m).bindTooltip('You',{permanent:true,direction:'top',offset:[0,-8]});
+    L.marker([s.lat,s.lng],{icon:shopIcon('best')}).addTo(m).bindTooltip(s.name.replace('Dat Bike ',''),{permanent:true,direction:'top',offset:[0,-8]});
+    L.polyline([[ME.lat,ME.lng],[s.lat,s.lng]],{color:'#fc5208',weight:3,dashArray:'6 6'}).addTo(m);
+    m.fitBounds([[ME.lat,ME.lng],[s.lat,s.lng]],{padding:[40,40]});
+  }
+}
+function gmaps(s){return `https://www.google.com/maps/dir/?api=1&origin=${ME.lat},${ME.lng}&destination=${encodeURIComponent(s.addr)}&travelmode=two-wheeler`}
 
 /* ---------- shell ---------- */
-function toast(title,text){const t=document.getElementById('toast');t.innerHTML=`<b>${esc(title)}</b>${esc(text)}`;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,3200)}
+function toast(title,text){const t=document.getElementById('toast');t.innerHTML=`<b>${esc(title)}</b>${esc(text)}`;t.hidden=false;clearTimeout(t._t);t._t=setTimeout(()=>t.hidden=true,3500)}
+function tick(){const n=now();document.getElementById('clock').textContent=`${n.getHours()}:${pad(n.getMinutes())}`}
 function render(){
   const bar=document.getElementById('bar'),scr=document.getElementById('screen'),tabs=document.getElementById('tabs');
-  if(!S.role){bar.innerHTML=`<div class="wm">DAT BIKE<b>.</b></div>`;tabs.innerHTML='';tabs.hidden=true;scr.innerHTML=rolePicker();scr.scrollTop=0;return}
+  if(!S.role){bar.innerHTML=LOGO;tabs.innerHTML='';tabs.hidden=true;scr.innerHTML=rolePicker();scr.scrollTop=0;clearMaps();return}
   tabs.hidden=false;
   const roleName={customer:'Customer',dealer:'Dealer',hq:'Dat Bike HQ'}[S.role];
-  bar.innerHTML=`<div class="wm">DAT BIKE<b>.</b></div><button class="role" onclick="setRole(null)">${roleName} ⇄</button>`;
+  bar.innerHTML=`${LOGO}<button class="role" onclick="setRole(null)">${roleName} ⇄</button>`;
   const T={customer:[['home','⌂','Home'],['service','🔧','Service'],['track','◷','Tracking'],['rewards','★','Rewards']],dealer:[['queue','☰','Queue'],['capacity','⚙','Capacity']],hq:[['network','◉','Network'],['claims','₫','Warranty']]}[S.role];
   const cur=S.role==='customer'?S.ctab:S.role==='dealer'?S.dtab:S.htab;
   tabs.innerHTML=T.map(([k,ic,l])=>`<button class="${cur===k?'on':''}" onclick="tab('${k}')"><span class="ic" aria-hidden="true">${ic}</span>${l}</button>`).join('');
   scr.innerHTML=S.role==='customer'?customer():S.role==='dealer'?dealer():hq();
   scr.scrollTop=0;
+  setTimeout(drawMaps,0);
 }
 function setRole(r){S.role=r;document.getElementById('toast').hidden=true;render()}
-function tab(k){if(S.role==='customer'){S.ctab=k;if(k==='service'&&!S.flow.step)S.flow.step='issue'}else if(S.role==='dealer')S.dtab=k;else S.htab=k;render()}
+function tab(k){if(S.role==='customer'){S.ctab=k;if(k==='service'&&!S.flow.step&&!S.myJob)startService(true)}else if(S.role==='dealer')S.dtab=k;else S.htab=k;render()}
 function rolePicker(){
   return `<div style="padding-top:12px"><div class="eyebrow">OpenCare network</div><h2 style="margin-top:6px">Who are you today?</h2><p class="sub" style="margin-top:6px">One app, three views of the same repair.</p></div>
   <div class="roles">
-   <button class="rolecard" onclick="setRole('customer')"><span class="ic" aria-hidden="true">🛵</span><span class="t">I’m a customer</span><span class="muted">Report a problem, get matched to a shop that can finish on time, track the repair.</span></button>
-   <button class="rolecard" onclick="setRole('dealer')"><span class="ic" aria-hidden="true">🔧</span><span class="t">I’m a dealer</span><span class="muted">Saigon Volt Service: see today’s bikes, update repairs, report free technicians and parts.</span></button>
+   <button class="rolecard" onclick="setRole('customer')"><span class="ic" aria-hidden="true">🛵</span><span class="t">I’m a customer</span><span class="muted">Minh, Quantum S2 owner in Quận 7. Report a problem and get matched to a shop that can finish on time.</span></button>
+   <button class="rolecard" onclick="setRole('dealer')"><span class="ic" aria-hidden="true">🔧</span><span class="t">I’m a dealer</span><span class="muted">See bikes booked to your shop, update repairs, report free technicians and parts.</span></button>
    <button class="rolecard" onclick="setRole('hq')"><span class="ic" aria-hidden="true">🏢</span><span class="t">I’m Dat Bike HQ</span><span class="muted">Watch quality across the network and approve warranty payments to dealers.</span></button>
-  </div><p class="concept">Concept prototype · sample data · not an official Dat Bike product</p>`;
+  </div><p class="concept">Concept prototype · simulated shop data · not an official Dat Bike product</p>`;
 }
 
 /* ---------- customer ---------- */
 function customer(){return({home:cHome,service:cService,track:cTrack,rewards:cRewards})[S.ctab]()}
-function bikeSvg(){return `<svg width="118" height="71" viewBox="0 0 150 90" aria-hidden="true"><circle cx="30" cy="66" r="18" fill="none" stroke="#444" stroke-width="6"/><circle cx="118" cy="66" r="18" fill="none" stroke="#444" stroke-width="6"/><path d="M30 66 L58 40 L96 40 L118 66" fill="none" stroke="#f56c1f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M52 40 L66 26 L88 26" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><rect x="60" y="42" width="34" height="14" rx="4" fill="#f56c1f"/></svg>`}
+function bikeSvg(){return `<svg width="118" height="71" viewBox="0 0 150 90" aria-hidden="true"><circle cx="30" cy="66" r="18" fill="none" stroke="#444" stroke-width="6"/><circle cx="118" cy="66" r="18" fill="none" stroke="#444" stroke-width="6"/><path d="M30 66 L58 40 L96 40 L118 66" fill="none" stroke="#ed6720" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M52 40 L66 26 L88 26" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><rect x="60" y="42" width="34" height="14" rx="4" fill="#ed6720"/></svg>`}
 function cHome(){
-  const j=S.myJob;
-  return `<div><p class="sub">Good morning,</p><h2>Minh</h2></div>
-  <div class="hero">${bikeSvg()}<div class="eyebrow">My bike</div><div class="bike">Quantum S2</div><div class="muted">59-X3 123.45</div><div class="muted">Warranty until 06/2028</div>
-  <div class="stats"><div><span class="muted">Battery</span><b>82%</b></div><div><span class="muted">Odometer</span><b>4,812 km</b></div><div><span class="muted">Points</span><b style="color:var(--accent)">${S.points.toLocaleString('en-US')}</b></div></div></div>
-  ${j?`<div class="card ai" onclick="tab('track')" style="cursor:pointer"><div class="row"><div><div class="tag">Repair in progress</div><h3 style="margin-top:4px">${esc(STAGES[j.status])}</h3><div class="muted">${esc(shop(j.shop).name)} · ready ${esc(j.etaText)}</div></div><span class="sp"></span><span style="font-size:20px">›</span></div></div>`
+  const j=S.myJob,h=now().getHours();
+  return `<div><p class="sub">${h<12?'Good morning':h<18?'Good afternoon':'Good evening'},</p><h2>${ME.name}</h2></div>
+  <div class="hero">${bikeSvg()}<div class="eyebrow">My Dat Bike</div><div class="bike">${ME.bike}</div><div class="muted">${ME.plate}</div><div class="muted">Warranty until 06/2028</div>
+  <div class="stats"><div><span class="muted">Battery</span><b>${ME.battery}%</b></div><div><span class="muted">Odometer</span><b>${ME.km.toLocaleString('en-US')} km</b></div><div><span class="muted">Points</span><b style="color:var(--accent)">${S.points.toLocaleString('en-US')}</b></div></div></div>
+  ${j?`<div class="card ai" onclick="tab('track')" style="cursor:pointer"><div class="row"><div><div class="tag">Repair in progress</div><h3 style="margin-top:4px">${esc(STAGES[Math.min(j.status,3)])}</h3><div class="muted">${esc(shop(j.shop).name)} · ready ${esc(j.etaText)}</div></div><span class="sp"></span><span style="font-size:20px">›</span></div></div>`
   :`<button class="btn pri" onclick="startService()">⚠ My bike has a problem</button>`}
-  <div class="card"><div class="row"><div><h3>Next maintenance</h3><div class="muted">Due at 5,000 km · about 2 weeks</div></div><span class="sp"></span><span class="pill p-acc">+100 pts</span></div></div>
-  <div class="card"><div class="row"><div><h3>OpenCare near you</h3><div class="muted">4 certified service points within 8 km</div></div><span class="sp"></span><button class="btn sec sm" onclick="startService()">Book</button></div></div>`;
+  <div class="card"><div class="addr"><span aria-hidden="true">📍</span><div><b>Your location</b><div class="muted">${esc(ME.address)}</div></div></div><div id="map-home" class="map sm" style="margin-top:10px"></div><div class="muted" style="margin-top:8px">${SHOPS.length} OpenCare points in range · nearest ${Math.min(...SHOPS.map(s=>km(ME,s))).toFixed(1)} km</div></div>
+  <div class="card"><div class="row"><div><h3>Next maintenance</h3><div class="muted">Due at 5,000 km · about 2 weeks</div></div><span class="sp"></span><span class="pill p-acc">+100 pts</span></div></div>`;
 }
-function startService(){S.flow={issue:null,photo:false,deadline:'tmr17',sort:'ontime',pick:null,step:'issue'};S.ctab='service';render()}
+function startService(silent){S.flow={issue:null,photo:false,deadline:'tmr17',sort:'ontime',pick:null,step:'issue'};S.ctab='service';if(!silent)render()}
 function cService(){
   if(S.myJob&&!S.flow.step)return `<div class="card"><h3>You already have a repair booked</h3><p class="sub" style="margin-top:6px">Follow it in Tracking.</p><button class="btn pri" style="margin-top:12px" onclick="tab('track')">Open tracking</button></div>`;
-  const f=S.flow;
-  if(!f.step)f.step='issue';
+  const f=S.flow;if(!f.step)f.step='issue';
   if(f.step==='issue'){
     const iss=f.issue&&ISSUES[f.issue];
-    return `<div><div class="eyebrow">Step 1 of 3</div><h2 style="margin-top:4px">What’s wrong with your bike?</h2></div>
+    return `<div><div class="eyebrow">Step 1 of 3</div><h2 style="margin-top:4px">What’s wrong with your ${ME.bike}?</h2></div>
     <div class="chips">${Object.entries(ISSUES).map(([k,v])=>`<button class="chip ${f.issue===k?'on':''}" onclick="S.flow.issue='${k}';render()">${esc(v.label)}</button>`).join('')}</div>
     <button class="photo ${f.photo?'on':''}" onclick="S.flow.photo=!S.flow.photo;render()">${f.photo?'✓ dashboard_photo.jpg added':'📷 Add a photo of the dashboard (optional)'}</button>
     ${iss?`<div class="card ai"><div class="tag">AI first check · ${iss.conf}% sure</div><h3 style="margin-top:6px">${esc(iss.dx)}</h3><div class="kv" style="margin-top:10px"><div>Part<b>${esc(iss.part)}</b></div><div>Repair time<b>~${iss.repair} h</b></div><div>Warranty<b>${iss.warranty?'Covered':'Not covered'}</b></div></div><p class="muted" style="margin:10px 0 0">A technician confirms this when you drop off the bike.</p></div>`:''}
     <button class="btn pri" ${f.issue?'':'disabled'} onclick="S.flow.step='deadline';render()">Next</button>`;
   }
   if(f.step==='deadline'){
+    const ds=deadlines();if(!ds.find(d=>d.k===f.deadline))f.deadline=ds[0].k;
     return `<div class="row"><button class="back" onclick="S.flow.step='issue';render()" aria-label="Back">←</button><div><div class="eyebrow">Step 2 of 3</div><h2 style="margin-top:4px">When do you need it back?</h2></div></div>
-    <div class="list">${DEADLINES.map(d=>`<button class="card row" style="text-align:left;${f.deadline===d.k?'border-color:var(--accent)':''}" onclick="S.flow.deadline='${d.k}';render()"><b>${d.label}</b><span class="sp"></span>${f.deadline===d.k?'<span class="pill p-acc">Selected</span>':''}</button>`).join('')}</div>
-    <div class="note">We match you with the shop most likely to finish <b>before your deadline</b>, not just the nearest one.</div>
+    <div class="list">${ds.map(d=>`<button class="card row" style="text-align:left;${f.deadline===d.k?'border-color:var(--accent)':''}" onclick="S.flow.deadline='${d.k}';render()"><b>${d.label}</b><span class="sp"></span>${f.deadline===d.k?'<span class="pill p-acc">Selected</span>':''}</button>`).join('')}</div>
+    <div class="note">We compare every OpenCare point around <b>${esc(ME.address.split(',')[0])}</b> and suggest the one most likely to finish <b>before your deadline</b>, not just the nearest one.</div>
     <button class="btn pri" onclick="S.flow.step='match';S.flow.pick=null;render()">Find a shop</button>`;
   }
   if(f.step==='match'){
-    const list=ranked(),dl=DEADLINES.find(d=>d.k===f.deadline);
-    if(!f.pick)f.pick=list[0].s.id;
+    const {list,dl}=ranked();
+    if(!f.pick||!list.find(r=>r.s.id===f.pick))f.pick=list[0].s.id;
     const best=list.find(r=>r.meets);
-    return `<div class="row"><button class="back" onclick="S.flow.step='deadline';render()" aria-label="Back">←</button><div><div class="eyebrow">Step 3 of 3</div><h2 style="margin-top:4px">Shops for “${esc(ISSUES[f.issue].label)}”</h2><div class="muted">Need it by ${esc(dl.label)}</div></div></div>
+    return `<div class="row"><button class="back" onclick="S.flow.step='deadline';render()" aria-label="Back">←</button><div><div class="eyebrow">Step 3 of 3</div><h2 style="margin-top:4px">Best shops for you</h2><div class="muted">${esc(ISSUES[f.issue].label)} · need it by ${esc(dl.label)}</div></div></div>
     <div class="seg"><button class="${f.sort==='near'?'on':''}" onclick="S.flow.sort='near';S.flow.pick=null;render()">Nearest</button><button class="${f.sort==='ontime'?'on':''}" onclick="S.flow.sort='ontime';S.flow.pick=null;render()">On time ✦ AI</button></div>
-    ${!best?`<div class="card" style="border-color:var(--warn)"><h3>No shop can finish by ${esc(dl.label)}</h3><p class="sub" style="margin-top:6px">Earliest is ${fmtEta(Math.min(...list.map(r=>r.e)))}. Options: pick a later time, or use free pickup and a loan bike from Dat Bike Tân Bình.</p></div>`:''}
+    <div id="map-match" class="map"></div>
+    ${!best?`<div class="card" style="border-color:var(--warn)"><h3>No shop can finish by ${esc(dl.label)}</h3><p class="sub" style="margin-top:6px">Earliest is ${label(list.slice().sort((a,b)=>a.h-b.h)[0].ready)}. Pick a later time, or ask for free pickup and a loan bike.</p></div>`:''}
     <div class="list">${list.map((r,i)=>{const s=r.s,top=f.sort==='ontime'&&i===0&&r.meets;return `<div class="card shop ${f.pick===s.id?'pick':''}" onclick="S.flow.pick='${s.id}';render()">
-      <div class="row">${top?'<span class="pill p-acc">✦ AI pick</span>':''}<span class="pill ${r.meets?'p-ok':'p-bad'}">${r.meets?'Ready in time':'Misses by '+fmtDur(r.missBy)}</span><span class="sp"></span><span class="muted">★ ${s.rating}</span></div>
-      <div><h3>${esc(s.name)}</h3><div class="muted">${esc(s.kind)} · ${esc(s.area)}</div></div>
-      <div class="kv"><div>Distance<b>${s.km} km</b></div><div>Bikes waiting<b>${s.queue}</b></div><div>Ready<b>${fmtEta(r.e)}</b></div></div>
+      <div class="row">${top?'<span class="pill p-acc">✦ AI pick</span>':''}<span class="pill ${r.meets?'p-ok':'p-bad'}">${r.meets?'Ready in time':'Late by '+fmtDur(r.missH)}</span><span class="sp"></span><span class="muted">★ ${s.rating}</span></div>
+      <div><h3>${esc(s.name)}</h3><div class="muted">${esc(s.kind)} · ${esc(s.addr)}</div></div>
+      <div class="kv"><div>Distance<b>${r.d.toFixed(1)} km</b></div><div>Bikes waiting<b>${s.queue}</b></div><div>Ready<b>${label(r.ready)}</b></div></div>
       ${f.pick===s.id?`<div class="why">${esc(reason(r))}</div>`:''}</div>`}).join('')}</div>
     <button class="btn pri" onclick="book()">Book ${esc(shop(f.pick).name)}</button>`;
   }
 }
 function book(){
-  const f=S.flow,s=shop(f.pick),e=eta(s,f.issue);
-  const j={id:'OC-24'+String(Math.floor(Math.random()*90+10)),shop:s.id,customer:'Minh (you)',bike:'Quantum S2',issue:f.issue,status:0,etaText:fmtEta(e),mine:true,dropoff:'Today, 10:30'};
-  S.jobs.unshift(j);S.myJob=j;S.flow.step=null;S.ctab='track';s.queue+=1;
-  render();toast('Booked','Drop off at '+s.name+' by 10:30. We will update you at every step.');
+  const f=S.flow,s=shop(f.pick),p=plan(s,f.issue),drop=at(p.ride);
+  const j={id:'OC-'+(2400+Math.floor(Math.random()*90)),shop:s.id,customer:ME.name+' (you)',bike:ME.bike,issue:f.issue,status:0,etaText:label(p.ready),dropoff:label(drop),mine:true};
+  S.jobs.unshift(j);S.myJob=j;S.dealerShop=s.id;S.flow.step=null;S.ctab='track';s.queue+=1;
+  render();toast('Booked',`Ride to ${s.name}, about ${rideMin(p.d)} min. Drop off by ${label(drop).split(', ')[1]}.`);
 }
 function cTrack(){
   const j=S.myJob;
@@ -274,19 +338,20 @@ function cTrack(){
   if(j.status>=4)return cDone(j);
   return `<div><div class="eyebrow">${esc(j.id)}</div><h2 style="margin-top:4px">${esc(STAGES[j.status])}</h2><p class="sub">${esc(s.name)} · ${esc(iss.dx)}</p></div>
   <div class="card"><div class="row"><div><div class="muted">Expected ready</div><div class="big">${esc(j.etaText)}</div></div><span class="sp"></span><span class="pill p-ok">On time</span></div></div>
-  <div class="card steps">${STAGES.map((st,i)=>`<div class="step ${i<j.status?'done':i===j.status?'now done':''}"><div class="dot">${i<j.status?'✓':i+1}</div><div><b>${st}</b><div class="muted">${i===0?'Drop-off '+esc(j.dropoff||'today'):i===1?'Technician confirms the AI check':i===2?esc(iss.part):'We send you a message'}</div></div></div>`).join('')}</div>
+  ${j.status===0?`<div id="map-track" class="map sm"></div><a class="btn sec" href="${gmaps(s)}" target="_blank" rel="noopener">Directions in Google Maps ↗</a>`:''}
+  <div class="card">${STAGES.map((st,i)=>`<div class="step ${i<=j.status?'done':''}"><div class="dot">${i<j.status?'✓':i+1}</div><div><b>${st}</b><div class="muted">${i===0?'Drop-off by '+esc(j.dropoff):i===1?'Technician confirms the AI check':i===2?esc(iss.part):'We send you a message'}</div></div></div>`).join('')}</div>
   <button class="btn sec" onclick="advance('${j.id}')">⏩ Fast-forward (demo)</button>
   <p class="muted" style="text-align:center;margin:0">Or switch to the Dealer view and update the repair there.</p>`;
 }
 function cDone(j){
-  const s=shop(j.shop),earned=j.earned||150;
+  const s=shop(j.shop);
   return `<div style="text-align:center;padding-top:10px"><div style="font-size:44px">✅</div><h2 style="margin-top:6px">Your bike is ready</h2><p class="sub">${esc(s.name)} finished on time.</p></div>
-  <div class="card" style="text-align:center"><div class="muted">Points earned</div><div class="big" style="color:var(--accent)">+${earned}</div><div class="muted">Warranty repair + finished on time</div></div>
+  <div class="card" style="text-align:center"><div class="muted">Points earned</div><div class="big" style="color:var(--accent)">+150</div><div class="muted">Warranty repair + finished on time</div></div>
   <div class="card" style="text-align:center"><h3>How was the service?</h3><div class="stars" style="margin-top:8px">${[1,2,3,4,5].map(n=>`<button class="${S.rated>=n?'on':''}" aria-label="${n} stars" onclick="S.rated=${n};render();toast('Thanks','Your rating helps Dat Bike keep OpenCare quality high.')">★</button>`).join('')}</div></div>
   <button class="btn pri" onclick="S.myJob=null;S.rated=0;S.ctab='home';render()">Done</button>`;
 }
 function cRewards(){
-  return `<div><div class="eyebrow">Dat Bike Rewards</div><h2 style="margin-top:4px">${S.points.toLocaleString('en-US')} points</h2><p class="sub">Silver member · 760 points to Gold</p></div>
+  return `<div><div class="eyebrow">Dat Bike Rewards</div><h2 style="margin-top:4px">${S.points.toLocaleString('en-US')} points</h2><p class="sub">Silver member · ${Math.max(0,2000-S.points)} points to Gold</p></div>
   <div class="card"><div class="meter"><i style="width:${Math.min(100,S.points/20)}%"></i></div></div>
   <h3>Earn points</h3>
   <div class="list">${[['Scheduled maintenance','+100'],['Genuine accessories','+1 per 10,000 ₫'],['Refer a friend who buys','+500'],['Repair finished on time','+50']].map(([a,b])=>`<div class="card row"><span>${a}</span><span class="sp"></span><span class="pill p-acc">${b}</span></div>`).join('')}</div>
@@ -297,56 +362,57 @@ function advance(id){
   const j=S.jobs.find(x=>x.id===id);if(!j)return;
   j.status=Math.min(j.status+1,4);
   if(j.mine){
-    if(j.status===4){S.points+=150;j.earned=150;const iss=ISSUES[j.issue];if(iss.warranty)S.claims.unshift({id:'WC-'+(882+S.claims.length),shop:j.shop,job:j.id,issue:j.issue,amount:iss.labor+iss.partCost,status:'pending'})}
+    if(j.status===4){S.points+=150;const iss=ISSUES[j.issue];if(iss.warranty)S.claims.unshift({id:'WC-'+(882+S.claims.length),shop:j.shop,job:j.id,issue:j.issue,amount:iss.labor+iss.partCost,status:'pending'})}
     if(S.role==='customer')toast('Update from '+shop(j.shop).name,j.status===4?'Your bike is ready for pickup.':STAGES[j.status]+'.');
   }
   render();
 }
 
 /* ---------- dealer ---------- */
-const MYSHOP='B';
 function dealer(){return S.dtab==='queue'?dQueue():dCapacity()}
 function dQueue(){
-  const s=shop(MYSHOP),jobs=S.jobs.filter(j=>j.shop===MYSHOP);
-  return `<div><div class="eyebrow">${esc(s.kind)}</div><h2 style="margin-top:4px">${esc(s.name)}</h2><p class="sub">Today · ${jobs.filter(j=>j.status<4).length} bikes in the shop</p></div>
-  <div class="list">${jobs.map(j=>{const iss=ISSUES[j.issue];return `<div class="card" style="${j.mine?'border-color:var(--accent)':''}"><div class="row"><b>${esc(j.id)}</b>${j.mine?'<span class="pill p-acc">New via app</span>':''}<span class="sp"></span><span class="pill ${j.status>=4?'p-ok':'p-warn'}">${esc(j.status>=4?'Handed over':STAGES[j.status])}</span></div>
-    <div class="kv" style="margin-top:10px"><div>Customer<b>${esc(j.customer)}</b></div><div>Bike<b>${esc(j.bike)}</b></div><div>Promised<b>${esc(j.etaText||j.eta)}</b></div></div>
+  const s=shop(S.dealerShop),jobs=S.jobs.filter(j=>j.shop===S.dealerShop);
+  return `<div><div class="eyebrow">${esc(s.kind)}</div><h2 style="margin-top:4px">${esc(s.name)}</h2><p class="sub">${esc(s.addr)} · ${jobs.filter(j=>j.status<4).length} bikes in the shop</p></div>
+  <div class="list">${jobs.length?jobs.map(j=>{const iss=ISSUES[j.issue];return `<div class="card" style="${j.mine?'border-color:var(--accent)':''}"><div class="row"><b>${esc(j.id)}</b>${j.mine?'<span class="pill p-acc">New via app</span>':''}<span class="sp"></span><span class="pill ${j.status>=4?'p-ok':'p-warn'}">${esc(j.status>=4?'Handed over':STAGES[j.status])}</span></div>
+    <div class="kv" style="margin-top:10px"><div>Customer<b>${esc(j.customer)}</b></div><div>Bike<b>${esc(j.bike)}</b></div><div>Promised<b>${esc(j.etaText)}</b></div></div>
     <div class="muted" style="margin-top:8px">AI check: ${esc(iss.dx)} · ${esc(iss.part)}${iss.warranty?' · Warranty':''}</div>
-    ${j.status<4?`<button class="btn pri" style="margin-top:12px" onclick="advance('${j.id}')">${j.status===3?'Hand over to customer':'Mark as: '+esc(STAGES[j.status+1])}</button>`:''}</div>`}).join('')}</div>`;
+    ${j.status<4?`<button class="btn pri" style="margin-top:12px" onclick="advance('${j.id}')">${j.status===3?'Hand over to customer':'Mark as: '+esc(STAGES[j.status+1])}</button>`:''}</div>`}).join(''):'<div class="card"><h3>No bikes booked yet</h3><p class="sub" style="margin-top:6px">Book a repair as the customer and it shows up here.</p></div>'}</div>`;
 }
 function dCapacity(){
-  const s=shop(MYSHOP);
-  return `<div><div class="eyebrow">Capacity</div><h2 style="margin-top:4px">What the AI sees</h2><p class="sub">Customers are matched to you when you can finish on time. Keep this up to date.</p></div>
+  const s=shop(S.dealerShop);
+  return `<div><div class="eyebrow">Capacity · ${esc(s.name)}</div><h2 style="margin-top:4px">What the AI sees</h2><p class="sub">Customers are matched to you when you can finish on time. Keep this up to date.</p></div>
   <div class="card"><div class="row"><div><h3>Technicians free now</h3><div class="muted">of ${s.techs} on shift</div></div><span class="sp"></span><div class="stepper"><button aria-label="Fewer" onclick="cap(-1)">−</button><b class="big" style="font-size:22px">${s.free}</b><button aria-label="More" onclick="cap(1)">+</button></div></div></div>
+  <div class="card"><div class="row"><div><h3>Bikes waiting</h3></div><span class="sp"></span><div class="stepper"><button aria-label="Fewer" onclick="q(-1)">−</button><b class="big" style="font-size:22px">${s.queue}</b><button aria-label="More" onclick="q(1)">+</button></div></div></div>
   <div class="card"><h3>Parts in stock</h3><div class="list" style="margin-top:10px">${[['sensor','Brake sensor BS-02'],['controller','Controller board MC-7'],['bearing','Wheel bearing WB-12']].map(([k,l])=>`<div class="row"><span>${l}</span><span class="sp"></span><button class="switch ${s.parts[k]?'on':''}" aria-label="${l} in stock" onclick="part('${k}')"></button></div>`).join('')}</div></div>
-  <div class="note">Try it: set technicians to 0 and turn off the brake sensor, then book as a customer. The AI stops recommending this shop.</div>
-  <div class="card"><div class="row"><div><h3>This month</h3><div class="muted">Service revenue from OpenCare</div></div><span class="sp"></span><b>${vnd(18650000)}</b></div></div>`;
+  <div class="note">Try it: set technicians to 0 and turn off the brake sensor, then book as the customer. The AI stops suggesting this shop.</div>`;
 }
-function cap(d){const s=shop(MYSHOP);s.free=Math.max(0,Math.min(s.techs,s.free+d));render()}
-function part(k){const s=shop(MYSHOP);s.parts[k]=!s.parts[k];render()}
+function cap(d){const s=shop(S.dealerShop);s.free=Math.max(0,Math.min(s.techs,s.free+d));render()}
+function q(d){const s=shop(S.dealerShop);s.queue=Math.max(0,s.queue+d);render()}
+function part(k){const s=shop(S.dealerShop);s.parts[k]=!s.parts[k];render()}
 
 /* ---------- HQ ---------- */
 function hq(){return S.htab==='network'?hNetwork():hClaims()}
 function hNetwork(){
-  const total=S.shops.reduce((a,s)=>a+s.jobs,0),avg=Math.round(S.shops.reduce((a,s)=>a+s.ontime*s.jobs,0)/total);
-  return `<div><div class="eyebrow">Dat Bike HQ</div><h2 style="margin-top:4px">OpenCare network</h2><p class="sub">Ho Chi Minh City · this month</p></div>
+  const total=SHOPS.reduce((a,s)=>a+s.jobs,0),avg=Math.round(SHOPS.reduce((a,s)=>a+s.ontime*s.jobs,0)/total);
+  const low=SHOPS.filter(s=>s.ontime<80);
+  return `<div><div class="eyebrow">Dat Bike HQ</div><h2 style="margin-top:4px">OpenCare network</h2><p class="sub">South Saigon · this month · simulated figures</p></div>
   <div class="row" style="gap:10px"><div class="card" style="flex:1"><div class="muted">Repairs</div><div class="big">${total}</div></div><div class="card" style="flex:1"><div class="muted">On time</div><div class="big" style="color:var(--accent)">${avg}%</div></div></div>
   <div class="card"><h3>Service points</h3><table style="margin-top:8px"><tr><th>Point</th><th>On time</th><th>★</th><th>Queue</th></tr>
-  ${S.shops.slice().sort((a,b)=>b.ontime-a.ontime).map(s=>`<tr><td><b>${esc(s.name)}</b><div class="muted">${esc(s.kind)}</div></td><td><span class="pill ${s.ontime>=85?'p-ok':'p-warn'}">${s.ontime}%</span></td><td>${s.rating}</td><td>${s.queue}</td></tr>`).join('')}</table></div>
-  <div class="card" style="border-color:var(--warn)"><div class="row"><span class="pill p-warn">Needs attention</span></div><h3 style="margin-top:8px">Phu Nhuan EV Care: 71% on time</h3><p class="sub" style="margin-top:4px">Often out of brake sensors. Suggest: stock 10 sensors and a 2-week SWAT coaching visit.</p></div>`;
+  ${SHOPS.slice().sort((a,b)=>b.ontime-a.ontime).map(s=>`<tr><td><b>${esc(s.name.replace('Dat Bike ',''))}</b><div class="muted">${esc(s.kind)}</div></td><td><span class="pill ${s.ontime>=85?'p-ok':'p-warn'}">${s.ontime}%</span></td><td>${s.rating}</td><td>${s.queue}</td></tr>`).join('')}</table></div>
+  ${low.map(s=>`<div class="card" style="border-color:var(--warn)"><span class="pill p-warn">Needs attention</span><h3 style="margin-top:8px">${esc(s.name)}: ${s.ontime}% on time</h3><p class="sub" style="margin-top:4px">Often out of brake sensors and short of technicians. Suggest: stock 10 sensors and a 2-week SWAT coaching visit.</p></div>`).join('')}`;
 }
 function hClaims(){
   const pend=S.claims.filter(c=>c.status==='pending');
   return `<div><div class="eyebrow">Dat Bike HQ</div><h2 style="margin-top:4px">Warranty payments</h2><p class="sub">Dealers repair Dat Bikes under warranty. HQ checks and pays them.</p></div>
   <div class="card"><div class="row"><div><div class="muted">Waiting for approval</div><div class="big">${pend.length}</div></div><span class="sp"></span><div style="text-align:right"><div class="muted">Amount</div><b>${vnd(pend.reduce((a,c)=>a+c.amount,0))}</b></div></div></div>
   <div class="list">${S.claims.map(c=>{const iss=ISSUES[c.issue],s=shop(c.shop);return `<div class="card"><div class="row"><b>${esc(c.id)}</b><span class="sp"></span><span class="pill ${c.status==='pending'?'p-warn':c.status==='approved'?'p-ok':'p-bad'}">${c.status==='pending'?'Pending':c.status==='approved'?'Paid':'Flagged'}</span></div>
-    <div class="kv" style="margin-top:10px"><div>Shop<b>${esc(s.name)}</b></div><div>Job<b>${esc(c.job)}</b></div><div>Amount<b>${vnd(c.amount)}</b></div></div>
+    <div class="kv" style="margin-top:10px"><div>Shop<b>${esc(s.name.replace('Dat Bike ',''))}</b></div><div>Job<b>${esc(c.job)}</b></div><div>Amount<b>${vnd(c.amount)}</b></div></div>
     <div class="muted" style="margin-top:8px">${esc(iss.dx)} · labor ${vnd(iss.labor)}${iss.partCost?' + part '+vnd(iss.partCost):''} · matches AI check ✓</div>
     ${c.status==='pending'?`<div class="row" style="margin-top:12px"><button class="btn pri sm" onclick="claim('${c.id}','approved')">Approve payment</button><button class="btn sec sm" onclick="claim('${c.id}','flagged')">Flag for review</button></div>`:''}</div>`}).join('')}</div>`;
 }
 function claim(id,st){const c=S.claims.find(x=>x.id===id);c.status=st;render();toast(st==='approved'?'Payment approved':'Claim flagged',st==='approved'?vnd(c.amount)+' goes to '+shop(c.shop).name+' this week.':'The dealer is asked for photos of the old part.')}
 
-render();
+tick();setInterval(tick,30000);render();
 </script>
 </body>
 </html>
